@@ -41,44 +41,6 @@ jobs:
       - run:
           name: validate
           command: npm run check
-  build:
-    working_directory: ~/stac
-    docker:
-      - image: cimg/node:16.14
-    steps:
-      - *restore_repo
-      - *restore_dependencies
-      - run:
-          name: build openapi
-          command: npm run build-openapi
-      - save_cache:
-          key: v0-build-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - ~/stac/build
-  publish:
-    working_directory: ~/stac
-    docker:
-      - image: cimg/node:16.14
-    steps:
-      - *restore_repo
-      - *restore_dependencies
-      - *restore_build
-      - add_ssh_keys
-      - run:
-          name: publish
-          command: |
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
-            npm run publish-openapi -- $CIRCLE_TAG
-  check-core-changes:
-    working_directory: ~/stac
-    docker:
-      - image: cimg/node:16.14
-    steps:
-      - *restore_repo
-      - *restore_dependencies
-      - run:
-          name: check-core-changes
-          command: npm run check-stac-spec-changes --compare-to=<< pipeline.git.base_revision >>
 
 workflows:
   version: 2
