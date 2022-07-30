@@ -2,9 +2,9 @@
 
 - **OpenAPI specification:** [openapi.yaml](openapi.yaml)
 - **Conformance Classes:**
-  - Item Search Filter: <https://api.stacspec.org/v1.0.0-rc.1/item-search#filter>
   - Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter>
   - Features Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter>
+  - Item Search Filter: <https://api.stacspec.org/v1.0.0-rc.1/item-search#filter>
   - CQL2 Text: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-text>
   - CQL2 JSON: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-json>
   - Basic CQL2: <http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2>
