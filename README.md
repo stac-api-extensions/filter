@@ -18,9 +18,9 @@
   - Property-Property Comparisons: <http://www.opengis.net/spec/cql2/1.0/conf/property-property>
   - Accent and Case-insensitive Comparison: <http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison>
 - **Extension [Maturity Classification](https://github.com/radiantearth/stac-api-spec/blob/main/README.md#maturity-classification):** Pilot
-
-- **Dependents:**
+- **Dependencies:**
   - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/blob/main/item-search)
+  - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/blob/main/ogcapi-features)
 
 - [STAC API - Filter Fragment](#stac-api---filter-fragment)
   - [Overview](#overview)
