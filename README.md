@@ -242,8 +242,11 @@ not compliant with this extension.
 ## Queryables
 
 The Queryables mechanism allows a client to discover what terms are available for use when writing filter
-expressions.  These terms can be defined per-collection, and the intersection of these terms over all collections is what
-is available for filtering when there are no collection restrictions. By default, these queryables are the only terms that may be used
+expressions. These terms are defined both over the entire catalog (at `/queryables`) and per collection (at `/collections/{collectionId}/queryables`). The decision as to which queryables to define
+for the entire catalog is at the discretion of the implementer, and can be anywhere between none and the union of all
+queryables across all collections.
+
+By default, the queryables are the only terms that may be used
 in filter expressions, and if any term is used in expression that is not defined as a queryable and error must be
 returned according to OAFeat Part 3. It is recognized that this is a severe restriction in STAC APIs that have highly variable
 and dynamic content, so this behavior may be modified by setting the `additionalProperties` attribute in the

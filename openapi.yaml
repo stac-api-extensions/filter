@@ -36,11 +36,9 @@ paths:
       description: |-
         This endpoint returns a list of variable terms that can be used in CQL2 expressions. The
         precise definition of this can be found in the OGC API - Features - Part 3: Filtering and the 
-        Common Query Language (CQL) specification.
+        Common Query Language (CQL2) specification.
       tags:
         - Filter Extension
-      # parameters:
-      # todo: may have collections parameter in the future
       responses:
         '200':
           $ref: '#/components/responses/Queryables'
