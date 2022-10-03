@@ -785,13 +785,13 @@ filter=prop1 = prop2
 
 This uses the same queryables as Example 4.
 
-The only temporal operator required is `ANYINTERACTS`. This is effectively that the datetime or interval operands
+The only temporal operator required is `T_INTERSECTS`. This is effectively that the datetime or interval operands
 have any overlap between them.
 
 #### Example 6: T_INTERSECTS cql2-text (GET)
 
 ```
-filter=datetime T_INTERSECTS INTERVAL('2020-11-11T00:00:00Z', '2020-11-12T00:00:00Z')
+filter=T_INTERSECTS(datetime, INTERVAL('2020-11-11T00:00:00Z', '2020-11-12T00:00:00Z'))
 ```
 
 #### Example 6: T_INTERSECTS cql2-json (POST)
