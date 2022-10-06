@@ -1,4 +1,4 @@
-# STAC API - Filter Fragment
+# STAC API - Filter Extension
 
 - **OpenAPI specification:** [openapi.yaml](openapi.yaml)
 - **Conformance Classes:**
@@ -22,7 +22,7 @@
   - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.1/item-search)
   - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.1/ogcapi-features)
 
-- [STAC API - Filter Fragment](#stac-api---filter-fragment)
+- [STAC API - Filter Extension](#stac-api---filter-extension)
   - [Overview](#overview)
   - [Limitations of Item Search](#limitations-of-item-search)
   - [Filter expressiveness](#filter-expressiveness)
