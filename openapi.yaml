@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: The SpatioTemporal Asset Catalog API - Filter
   description: Adds parameters to compare properties and only return the items that match
-  version: 1.0.0-rc.1
+  version: 1.0.0-rc.2
 
 tags:
   - name: Core
@@ -159,7 +159,7 @@ components:
         The coordinate reference system (CRS) used by spatial literals in the 'filter' value.  The only value that STAC APIs must
         accept is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.
       type: string
-      format: uri    
+      format: uri
     exception:
       type: object
       description: |-
