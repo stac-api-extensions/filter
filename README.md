@@ -1,28 +1,6 @@
-# STAC API - Filter Extension
+# STAC API - Filter Extension Specification
 
-- **OpenAPI specification:** [openapi.yaml](openapi.yaml)
-- **Conformance Classes:**
-  - Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter>
-  - Features Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter>
-  - Item Search Filter: <https://api.stacspec.org/v1.0.0-rc.2/item-search#filter>
-  - CQL2 Text: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-text>
-  - CQL2 JSON: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-json>
-  - Basic CQL2: <http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2>
-  - Advanced Comparison Operators: <http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators>
-  - Basic Spatial Operators: <http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators>
-  - Spatial Operators: <http://www.opengis.net/spec/cql2/1.0/conf/spatial-operators>
-  - Temporal Operators: <http://www.opengis.net/spec/cql2/1.0/conf/temporal-operators>
-  - Custom Functions: <http://www.opengis.net/spec/cql2/1.0/conf/functions>
-  - Arithmetic Expressions: <http://www.opengis.net/spec/cql2/1.0/conf/arithmetic>
-  - Array Operators: <http://www.opengis.net/spec/cql2/1.0/conf/array-operators>
-  - Property-Property Comparisons: <http://www.opengis.net/spec/cql2/1.0/conf/property-property>
-  - Accent and Case-insensitive Comparison: <http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison>
-- **Extension [Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.2/README.md#maturity-classification):** Pilot
-- **Dependencies:**
-  - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.2/item-search)
-  - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.2/ogcapi-features)
-
-- [STAC API - Filter Extension](#stac-api---filter-extension)
+- [STAC API - Filter Extension Specification](#stac-api---filter-extension-specification)
   - [Overview](#overview)
   - [Limitations of Item Search](#limitations-of-item-search)
   - [Filter expressiveness](#filter-expressiveness)
@@ -48,14 +26,14 @@
       - [Example 5: GET with cql2-text](#example-5-get-with-cql2-text)
       - [Example 5: POST with cql2-json](#example-5-post-with-cql2-json)
     - [Example 6: Temporal Intersection](#example-6-temporal-intersection)
-      - [Example 6: T_INTERSECTS cql2-text (GET)](#example-6-t_intersects-cql2-text-get)
-      - [Example 6: T_INTERSECTS cql2-json (POST)](#example-6-t_intersects-cql2-json-post)
+      - [Example 6: T\_INTERSECTS cql2-text (GET)](#example-6-t_intersects-cql2-text-get)
+      - [Example 6: T\_INTERSECTS cql2-json (POST)](#example-6-t_intersects-cql2-json-post)
     - [Example 7: Spatial Intersection](#example-7-spatial-intersection)
-      - [Example 7: S_INTERSECTS cql2-text (GET)](#example-7-s_intersects-cql2-text-get)
-      - [Example 7: S_INTERSECTS cql2-json (POST)](#example-7-s_intersects-cql2-json-post)
+      - [Example 7: S\_INTERSECTS cql2-text (GET)](#example-7-s_intersects-cql2-text-get)
+      - [Example 7: S\_INTERSECTS cql2-json (POST)](#example-7-s_intersects-cql2-json-post)
     - [Example 8: Spatial Intersection Disjunction](#example-8-spatial-intersection-disjunction)
-      - [Example 8: S_INTERSECTS cql2-text (GET)](#example-8-s_intersects-cql2-text-get)
-      - [Example 8: S_INTERSECTS cql2-json (POST)](#example-8-s_intersects-cql2-json-post)
+      - [Example 8: S\_INTERSECTS cql2-text (GET)](#example-8-s_intersects-cql2-text-get)
+      - [Example 8: S\_INTERSECTS cql2-json (POST)](#example-8-s_intersects-cql2-json-post)
     - [Example 9: Using IS NULL](#example-9-using-is-null)
       - [Example 9: cql2-text (GET)](#example-9-cql2-text-get)
       - [Example 9: cql2-json (POST)](#example-9-cql2-json-post)
@@ -73,6 +51,31 @@
       - [Example 13: cql2-json (POST)](#example-13-cql2-json-post)
 
 ## Overview
+
+- **Title:** Filter
+- **OpenAPI specification:** [openapi.yaml](openapi.yaml)
+- **Conformance Classes:**
+  - Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter>
+  - Features Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter>
+  - Item Search Filter: <https://api.stacspec.org/v1.0.0-rc.2/item-search#filter>
+  - CQL2 Text: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-text>
+  - CQL2 JSON: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-json>
+  - Basic CQL2: <http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2>
+  - Advanced Comparison Operators: <http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators>
+  - Basic Spatial Operators: <http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators>
+  - Spatial Operators: <http://www.opengis.net/spec/cql2/1.0/conf/spatial-operators>
+  - Temporal Operators: <http://www.opengis.net/spec/cql2/1.0/conf/temporal-operators>
+  - Custom Functions: <http://www.opengis.net/spec/cql2/1.0/conf/functions>
+  - Arithmetic Expressions: <http://www.opengis.net/spec/cql2/1.0/conf/arithmetic>
+  - Array Operators: <http://www.opengis.net/spec/cql2/1.0/conf/array-operators>
+  - Property-Property Comparisons: <http://www.opengis.net/spec/cql2/1.0/conf/property-property>
+  - Accent and Case-insensitive Comparison: <http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison>
+- **Scope:** STAC API - Features, STAC API - Item Search
+- **[Maturity Extension Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Pilot
+- **Dependencies:**
+  - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.2/item-search)
+  - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0-rc.2/ogcapi-features)
+- **Owner**: @philvarner
 
 The Filter extension provides an expressive mechanism for searching based on Item attributes.
 
