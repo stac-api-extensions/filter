@@ -63,7 +63,7 @@ paths:
           description: Collection description
           links:
             queryables:
-              operationId: getQueryables
+              operationId: getQueryablesForCollection
               description: |-
                 A link with rel=queryables for queryables to only apply to this collection.
   /collections/{collectionId}/queryables:
