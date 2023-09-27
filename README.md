@@ -3,7 +3,7 @@
 - [STAC API - Filter Extension Specification](#stac-api---filter-extension-specification)
   - [Overview](#overview)
   - [Limitations of Item Search](#limitations-of-item-search)
-  - [Filter expressiveness](#filter-expressiveness)
+  - [Filter Expressiveness](#filter-expressiveness)
   - [Conformance Classes](#conformance-classes)
   - [Getting Started with Implementation](#getting-started-with-implementation)
   - [Queryables](#queryables)
@@ -28,27 +28,30 @@
     - [Example 6: Temporal Intersection](#example-6-temporal-intersection)
       - [Example 6: T\_INTERSECTS cql2-text (GET)](#example-6-t_intersects-cql2-text-get)
       - [Example 6: T\_INTERSECTS cql2-json (POST)](#example-6-t_intersects-cql2-json-post)
-    - [Example 7: Spatial Intersection](#example-7-spatial-intersection)
+    - [Example 7: Spatial Intersection in Basic Spatial Operators](#example-7-spatial-intersection-in-basic-spatial-operators)
       - [Example 7: S\_INTERSECTS cql2-text (GET)](#example-7-s_intersects-cql2-text-get)
       - [Example 7: S\_INTERSECTS cql2-json (POST)](#example-7-s_intersects-cql2-json-post)
-    - [Example 8: Spatial Intersection Disjunction](#example-8-spatial-intersection-disjunction)
+    - [Example 8: Spatial Intersection in Spatial Operators](#example-8-spatial-intersection-in-spatial-operators)
       - [Example 8: S\_INTERSECTS cql2-text (GET)](#example-8-s_intersects-cql2-text-get)
       - [Example 8: S\_INTERSECTS cql2-json (POST)](#example-8-s_intersects-cql2-json-post)
-    - [Example 9: Using IS NULL](#example-9-using-is-null)
-      - [Example 9: cql2-text (GET)](#example-9-cql2-text-get)
-      - [Example 9: cql2-json (POST)](#example-9-cql2-json-post)
-    - [Example 10: Using BETWEEN](#example-10-using-between)
+    - [Example 9: Spatial Intersection Disjunction](#example-9-spatial-intersection-disjunction)
+      - [Example 9: S\_INTERSECTS cql2-text (GET)](#example-9-s_intersects-cql2-text-get)
+      - [Example 9: S\_INTERSECTS cql2-json (POST)](#example-9-s_intersects-cql2-json-post)
+    - [Example 10: Using IS NULL](#example-10-using-is-null)
       - [Example 10: cql2-text (GET)](#example-10-cql2-text-get)
       - [Example 10: cql2-json (POST)](#example-10-cql2-json-post)
-    - [Example 11: Using LIKE](#example-11-using-like)
+    - [Example 11: Using BETWEEN](#example-11-using-between)
       - [Example 11: cql2-text (GET)](#example-11-cql2-text-get)
       - [Example 11: cql2-json (POST)](#example-11-cql2-json-post)
-    - [Example 12: Using the CASEI Case-insensitive Comparison Function](#example-12-using-the-casei-case-insensitive-comparison-function)
+    - [Example 12: Using LIKE](#example-12-using-like)
       - [Example 12: cql2-text (GET)](#example-12-cql2-text-get)
       - [Example 12: cql2-json (POST)](#example-12-cql2-json-post)
-    - [Example 13: Using the ACCENTI Accent-insensitive Comparison Function](#example-13-using-the-accenti-accent-insensitive-comparison-function)
+    - [Example 13: Using the CASEI Case-insensitive Comparison Function](#example-13-using-the-casei-case-insensitive-comparison-function)
       - [Example 13: cql2-text (GET)](#example-13-cql2-text-get)
       - [Example 13: cql2-json (POST)](#example-13-cql2-json-post)
+    - [Example 14: Using the ACCENTI Accent-insensitive Comparison Function](#example-14-using-the-accenti-accent-insensitive-comparison-function)
+      - [Example 14: cql2-text (GET)](#example-14-cql2-text-get)
+      - [Example 14: cql2-json (POST)](#example-14-cql2-json-post)
 
 ## Overview
 
@@ -114,6 +117,7 @@ OAFeat defines a limited set of filtering capabilities. Filtering can only be do
 with only a single `bbox` (rectangular spatial filter) parameter and a single datetime (instant or interval) parameter.
 
 The STAC Item Search specification extends the functionality of OAFeat in a few key ways:
+
 - It allows cross-collection filtering, whereas OAFeat only allows filtering within a single collection.
   (`collections` parameter, accepting 0 or more collections)
 - It allows filtering by Item ID (`ids` parameter)
@@ -123,7 +127,7 @@ However, it does not contain a formalized way to filter based on arbitrary field
 no way to express the filter "item.properties.eo:cloud_cover is less than 10". It also does not have a way to logically combine
 multiple spatial or temporal filters.
 
-## Filter expressiveness
+## Filter Expressiveness
 
 This extension expands the capabilities of Item Search and the OAFeat Items resource with
 [OAFeat Part 3 CQL2](https://portal.ogc.org/files/96288)
@@ -132,6 +136,7 @@ those provided by SQL. This extension also supports the Queryables mechanism tha
 predicates.
 
 CQL2 enables more expressive queries than supported by STAC API Item Search. These include:
+
 - Use of Item Property values in predicates (e.g., `item.properties.eo:cloud_cover`), using comparison operators
 - Items whose `datetime` values are in the month of August of the years 2017-2021, using OR and datetime comparisons
 - Items whose `geometry` values intersect any one of several Polygons, using `OR` and `S_INTERSECTS`
@@ -180,15 +185,20 @@ The implementation **may** support the OAFeat Part 3 *Features Filter* conforman
   CQL2 conformance classes to the Features resource(`/collections/{cid}/items`).
 
 For additional capabilities, the following classes may be implemented:
+
 - Advanced Comparison Operators
   (`http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators`) defines the `LIKE`,
   `BETWEEN`, and `IN` operators. **Note**: this conformance class no longer requires implementing the
   `lower` and `upper` functions.
-- Basic Spatial Operators (`http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators`) defines the intersects operator (`S_INTERSECTS`).
+- Basic Spatial Operators (`http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators`) defines the intersects operator (`S_INTERSECTS`)
+  that accepts only a BBOX or POINT parameter.
 - Spatial Operators
   (`http://www.opengis.net/spec/cql2/1.0/conf/spatial-operators`) defines a set of operators that
   are part of the Dimensionally Extended Nine-intersection Model (DE-9IM) relation operators
-  (`S_CONTAINS`, `S_CROSSES`, `S_DISJOINT`, `S_EQUALS`, `S_INTERSECTS`, `S_OVERLAPS`, `S_TOUCHES`, and `S_WITHIN`)
+  (`S_CONTAINS`, `S_CROSSES`, `S_DISJOINT`, `S_EQUALS`, `S_INTERSECTS`, `S_OVERLAPS`, `S_TOUCHES`, and `S_WITHIN`),
+  and additionally defines the intersects operator (`S_INTERSECTS`) to accept LINESTRING,
+  POLYGON, MULTIPOINT, MULTILINESTRING, and MULTIPOLYGON,
+  in addition to BBOX and POINT as supported in Basic Spatial Operators.
 - Temporal Operators
   (`http://www.opengis.net/spec/cql2/1.0/conf/temporal-operators`) defines several temporal
   operators that provide more expressivity with datetime types than the relative comparison
@@ -226,11 +236,13 @@ dynamic Queryables schema.
 Formal definitions and grammars for CQL2 can be found in the
 [OAFeat CQL spec](https://github.com/opengeospatial/ogcapi-features/tree/master/cql2) includes a BNF grammar
   for CQL2 Text and both a JSON Schema and an OpenAPI specification for CQL2 JSON. The standalone files are:
+
 - [cql.bnf](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.bnf)
 - [cql.json](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.json)
 - [cql.yml](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.yml)
 
 These projects have or are developing CQL2 support:
+
 - [pgstac](https://github.com/stac-utils/pgstac) supports CQL2 JSON
 - [pygeofilter](https://github.com/geopython/pygeofilter) has support for CQL2 JSON and for the older ECQL standard that
 - [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
@@ -487,7 +499,7 @@ This example uses the queryables definition in (Interaction with Endpoints)(#int
 Note that `filter-lang` defaults to `cql2-text` in this case. The parameter `filter-crs` defaults
 to `http://www.opengis.net/def/crs/OGC/1.3/CRS84` for a STAC API.
 
-```
+```text
 filter=id='LC08_L1TP_060247_20180905_20180912_01_T1_L1TP' AND collection='landsat8_l1tp'
 ```
 
@@ -523,7 +535,7 @@ OGC API Features filters only operate against a single collection already.
 
 #### Example 2: GET with cql2-text
 
-```
+```text
 filter=collection = 'landsat8_l1tp'
   AND eo:cloud_cover <= 10
   AND datetime >= TIMESTAMP('2021-04-08T04:39:23Z')
@@ -675,7 +687,7 @@ a tiny sliver of data.
 
 #### Example 3: AND cql2-text (GET)
 
-```
+```text
 filter=sentinel:data_coverage > 50 AND eo:cloud_cover < 10
 ```
 
@@ -709,7 +721,7 @@ This uses the same queryables as Example 3.
 
 #### Example 4: OR cql2-text (GET)
 
-```
+```text
 filter=sentinel:data_coverage > 50 OR eo:cloud_cover < 10
 ```
 
@@ -765,7 +777,7 @@ This queryables JSON Schema is used in these examples:
 
 #### Example 5: GET with cql2-text
 
-```
+```text
 filter=prop1 = prop2
 ```
 
@@ -793,7 +805,7 @@ have any overlap between them.
 
 #### Example 6: T_INTERSECTS cql2-text (GET)
 
-```
+```text
 filter=T_INTERSECTS(datetime, INTERVAL('2020-11-11T00:00:00Z', '2020-11-12T00:00:00Z'))
 ```
 
@@ -812,20 +824,51 @@ filter=T_INTERSECTS(datetime, INTERVAL('2020-11-11T00:00:00Z', '2020-11-12T00:00
 }
 ```
 
-### Example 7: Spatial Intersection
+### Example 7: Spatial Intersection in Basic Spatial Operators
 
 The only spatial operator that must be implemented for Basic Spatial Operators
-is `S_INTERSECTS`. This has the same semantics as provided
+is `S_INTERSECTS` supporting BBOX and POINT. This has the same semantics as provided
 by the Item Search `intersects` parameter.  The `cql2-text` format uses WKT geometries and the `cql2-json`
 format uses GeoJSON geometries.
 
 #### Example 7: S_INTERSECTS cql2-text (GET)
 
-```
-filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189 38.8351,-77.0824 38.8351,-77.0824 38.7886)))
+```text
+filter=S_INTERSECTS(geometry,POINT(-77.0824 38.7886))
 ```
 
 #### Example 7: S_INTERSECTS cql2-json (POST)
+
+```json
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "s_intersects",
+    "args": [
+      { "property": "geometry" } ,
+      {
+        "type": "Point",
+        "coordinates": [-77.0824, 38.7886]
+      }
+    ]
+  }
+}
+```
+
+### Example 8: Spatial Intersection in Spatial Operators
+
+The Spatial Operators extends the Basic Spatial Operators by adding support for additional
+geometries to the `S_INTERSECTS` parameter. This has the same semantics as provided
+by the Item Search `intersects` parameter.  The `cql2-text` format uses WKT geometries and the `cql2-json`
+format uses GeoJSON geometries.
+
+#### Example 8: S_INTERSECTS cql2-text (GET)
+
+```text
+filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189 38.8351,-77.0824 38.8351,-77.0824 38.7886)))
+```
+
+#### Example 8: S_INTERSECTS cql2-json (POST)
 
 ```json
 {
@@ -847,20 +890,20 @@ filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189
 }
 ```
 
-### Example 8: Spatial Intersection Disjunction
+### Example 9: Spatial Intersection Disjunction
 
 One limitation of the `intersects` parameter is that only a single geometry may be provided. While most
 GeoJSON geometries can be combined to form a composite (e.g., multiple Polygons can be combined to form a
 MultiPolygon), this is much easier to do in the query by combining `S_INTERSECTS` predicates with the `OR`
 logical operator.
 
-#### Example 8: S_INTERSECTS cql2-text (GET)
+#### Example 9: S_INTERSECTS cql2-text (GET)
 
-```
+```text
 filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189 38.8351,-77.0824 38.8351,-77.0824 38.7886))) OR S_INTERSECTS(geometry,POLYGON((-79.0935 38.7886,-79.0290 38.7886,-79.0290 38.8351,-79.0935 38.8351,-79.0935 38.7886)))
 ```
 
-#### Example 8: S_INTERSECTS cql2-json (POST)
+#### Example 9: S_INTERSECTS cql2-json (POST)
 
 ```json
 {
@@ -901,7 +944,7 @@ filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189
 }
 ```
 
-### Example 9: Using IS NULL
+### Example 10: Using IS NULL
 
 One of the main use cases for STAC API is doing cross-collection query. Commonly, this means that items have
 different sets of properties. For example, a collection of Sentinel 2 data may have a property
@@ -910,13 +953,13 @@ different sets of properties. For example, a collection of Sentinel 2 data may h
 data.  However, we many also want to also include in our result items that do not have a value defined for
 either of those properties.
 
-#### Example 9: cql2-text (GET)
+#### Example 10: cql2-text (GET)
 
-```
+```text
 filter=sentinel:data_coverage > 50 OR landsat:coverage_percent < 10 OR (sentinel:data_coverage IS NULL AND landsat:coverage_percent IS NULL)
 ```
 
-#### Example 9: cql2-json (POST)
+#### Example 10: cql2-json (POST)
 
 ```json
 {
@@ -950,17 +993,17 @@ filter=sentinel:data_coverage > 50 OR landsat:coverage_percent < 10 OR (sentinel
 }
 ```
 
-### Example 10: Using BETWEEN
+### Example 11: Using BETWEEN
 
 The BETWEEN operator allows for checking if a numeric value is within a specified inclusive range.
 
-#### Example 10: cql2-text (GET)
+#### Example 11: cql2-text (GET)
 
-```
+```text
 filter=eo:cloud_cover BETWEEN 0 AND 50
 ```
 
-#### Example 10: cql2-json (POST)
+#### Example 11: cql2-json (POST)
 
 ```json
 {
@@ -975,17 +1018,17 @@ filter=eo:cloud_cover BETWEEN 0 AND 50
 }
 ```
 
-### Example 11: Using LIKE
+### Example 12: Using LIKE
 
 The LIKE operator allows for pattern-based string matching.
 
-#### Example 11: cql2-text (GET)
+#### Example 12: cql2-text (GET)
 
-```
+```text
 filter=mission LIKE 'sentinel%'
 ```
 
-#### Example 11: cql2-json (POST)
+#### Example 12: cql2-json (POST)
 
 ```json
 {
@@ -1000,7 +1043,7 @@ filter=mission LIKE 'sentinel%'
 }
 ```
 
-### Example 12: Using the CASEI Case-insensitive Comparison Function
+### Example 13: Using the CASEI Case-insensitive Comparison Function
 
 The predefined function `CASEI` allows for case-insensitive comparisons. This function is
 defined in the Accent and Case-insensitive Comparison conformance class.
@@ -1009,17 +1052,17 @@ In the example using 'Straße', both the capitalized 'S' and Eszett ('ß') are c
 insensitive representation whereby the expressions `CASEI('Straße')`, `CASEI('straße')`,
 `CASEI('Strasse')`, and `CASEI('strasse')` are all equal.
 
-#### Example 12: cql2-text (GET)
+#### Example 13: cql2-text (GET)
 
-```
+```text
 filter=CASEI(provider) = CASEI('coolsat')
 ```
 
-```
+```text
 filter=CASEI(provider) = CASEI('Straße')
 ```
 
-#### Example 12: cql2-json (POST)
+#### Example 13: cql2-json (POST)
 
 ```json
 {
@@ -1059,19 +1102,19 @@ filter=CASEI(provider) = CASEI('Straße')
 }
 ```
 
-### Example 13: Using the ACCENTI Accent-insensitive Comparison Function
+### Example 14: Using the ACCENTI Accent-insensitive Comparison Function
 
 The predefined function `ACCENTI` allows for accent-insensitive comparisons. This function is
 defined in the Accent and Case-insensitive Comparison conformance class. In the example below,
 `ACCENTI('tiburon')` and `ACCENTI('tiburón')` evaluate to be equal.
 
-#### Example 13: cql2-text (GET)
+#### Example 14: cql2-text (GET)
 
-```
+```text
 filter=ACCENTI(provider) = ACCENTI('tiburón')
 ```
 
-#### Example 13: cql2-json (POST)
+#### Example 14: cql2-json (POST)
 
 ```json
 {
