@@ -250,7 +250,7 @@ for the entire catalog is at the discretion of the implementer, and can be anywh
 queryables across all collections.
 
 By default, the queryables are the only terms that may be used
-in filter expressions, and if any term is used in expression that is not defined as a queryable and error must be
+in filter expressions, and if any term is used in expression that is not defined as a queryable an error must be
 returned according to OAFeat Part 3. It is recognized that this is a severe restriction in STAC APIs that have highly variable
 and dynamic content, so this behavior may be modified by setting the `additionalProperties` attribute in the
 queryables definition to `true`.  As such, any syntactically-valid term for a property will be accepted, and the
@@ -608,21 +608,21 @@ The queryables defined are as follows:
       "description" : "Cloud Cover",
       "$ref": "https://stac-extensions.github.io/eo/v1.0.0/schema.json#/properties/eo:cloud_cover"
     },
-    "acme:data_coverage" : {
-      "description" : "Acme Sat Data Coverage",
+    "sentinel:data_coverage" : {
+      "description" : "Sentinel Sat Data Coverage",
       "type": "integer",
       "minimum": 0,
       "maximum": 100
     },
-    "acme:grid_id" : {
-      "description" : "Acme Sat Grid ID",
+    "sentinel:grid_id" : {
+      "description" : "Sentinel Sat Grid ID",
       "type": "string"
     }
   }
 }
 ```
 
-Note that `acme:data_coverage` and `acme:grid_id` are properties that are not defined in an extension schema, and are intended to
+Note that `sentinel:data_coverage` and `sentinel:grid_id` are properties that are not defined in an extension schema, and are intended to
 represent vendor-specific properties. Because of this, they are fully specified directly in the JSON Schema. However, it is
 recommended that vendor-specific properties be published as part of a well-defined extension schema, so these only represent ones
 that have not followed that recommendation.
@@ -705,7 +705,7 @@ coverage or low cloud cover.
 
 ### Example 4: Disjunction with OR
 
-This uses the same queryables as Example 4.
+This uses the same queryables as Example 3.
 
 #### Example 4: OR cql2-text (GET)
 
@@ -786,7 +786,7 @@ filter=prop1 = prop2
 
 ### Example 6: Temporal Intersection
 
-This uses the same queryables as Example 4.
+This uses the same queryables as Example 3.
 
 The only temporal operator required is `T_INTERSECTS`. This is effectively that the datetime or interval operands
 have any overlap between them.
