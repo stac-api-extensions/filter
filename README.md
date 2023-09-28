@@ -840,11 +840,7 @@ format uses GeoJSON geometries.
 #### Example 7: S_INTERSECTS cql2-text (GET)
 
 ```text
-<<<<<<< HEAD
-filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189 38.8351,-77.0824 38.8351,-77.0824 38.7886)))
-=======
 filter=S_INTERSECTS(geometry,POINT(-77.0824 38.7886))
->>>>>>> main
 ```
 
 #### Example 7: S_INTERSECTS cql2-json (POST)
