@@ -237,9 +237,11 @@ The standalone files are:
 
 These projects have or are developing CQL2 support:
 
-- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac) has support via
-  [pgstac](https://github.com/stac-utils/pgstac) for CQL2 Text and CQL2 JSON
-- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON, 
+- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac) has support for
+  CQL2 Text and CQL2 JSON, via using [pygeofilter](https://github.com/geopython/pygeofilter)
+  to translate CQL2 Text to CQL2 JSON and processing the CQL2 JSON with
+  [pgstac](https://github.com/stac-utils/pgstac)
+- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON,
   including the ability to convert from CQL2 Text to CQL2 JSON
 - [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
 - [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
