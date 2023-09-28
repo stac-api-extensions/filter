@@ -114,6 +114,7 @@ OAFeat defines a limited set of filtering capabilities. Filtering can only be do
 with only a single `bbox` (rectangular spatial filter) parameter and a single datetime (instant or interval) parameter.
 
 The STAC Item Search specification extends the functionality of OAFeat in a few key ways:
+
 - It allows cross-collection filtering, whereas OAFeat only allows filtering within a single collection.
   (`collections` parameter, accepting 0 or more collections)
 - It allows filtering by Item ID (`ids` parameter)
@@ -132,6 +133,7 @@ those provided by SQL. This extension also supports the Queryables mechanism tha
 predicates.
 
 CQL2 enables more expressive queries than supported by STAC API Item Search. These include:
+
 - Use of Item Property values in predicates (e.g., `item.properties.eo:cloud_cover`), using comparison operators
 - Items whose `datetime` values are in the month of August of the years 2017-2021, using OR and datetime comparisons
 - Items whose `geometry` values intersect any one of several Polygons, using `OR` and `S_INTERSECTS`
@@ -180,6 +182,7 @@ The implementation **may** support the OAFeat Part 3 *Features Filter* conforman
   CQL2 conformance classes to the Features resource(`/collections/{cid}/items`).
 
 For additional capabilities, the following classes may be implemented:
+
 - Advanced Comparison Operators
   (`http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators`) defines the `LIKE`,
   `BETWEEN`, and `IN` operators. **Note**: this conformance class no longer requires implementing the
@@ -224,8 +227,9 @@ implementing CQL2 Text. From there, other comparison operators can be implemente
 dynamic Queryables schema.
 
 Formal definitions and grammars for CQL2 can be found in the
-[OAFeat CQL spec](https://github.com/opengeospatial/ogcapi-features/tree/master/cql2) includes a BNF grammar
-  for CQL2 Text and both a JSON Schema and an OpenAPI specification for CQL2 JSON. The standalone files are:
+[OAFeat CQL spec](https://github.com/opengeospatial/ogcapi-features/tree/master/cql2) includes
+a BNF grammar for CQL2 Text and both a JSON Schema and an OpenAPI specification for CQL2 JSON.
+The standalone files are:
   
 - [cql.bnf](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.bnf)
 - [cql.json](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.json)
@@ -233,8 +237,10 @@ Formal definitions and grammars for CQL2 can be found in the
 
 These projects have or are developing CQL2 support:
 
-- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac) has support via [pgstac](https://github.com/stac-utils/pgstac) for CQL2 Text and CQL2 JSON
-- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON, including the ability to convert from CQL2 Text to CQL2 JSON
+- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac) has support via
+  [pgstac](https://github.com/stac-utils/pgstac) for CQL2 Text and CQL2 JSON
+- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON, 
+  including the ability to convert from CQL2 Text to CQL2 JSON
 - [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
 - [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
 
@@ -245,9 +251,11 @@ not compliant with this extension.
 
 ## Queryables
 
-The Queryables mechanism allows a client to discover what terms are available for use when writing filter
-expressions. These terms are defined both over the entire catalog (at `/queryables`) and per collection (at `/collections/{collectionId}/queryables`). The decision as to which queryables to define
-for the entire catalog is at the discretion of the implementer, and can be anywhere between none and the union of all
+The Queryables mechanism allows a client to discover what terms are available for use when
+writing filter expressions. These terms are defined both over the entire catalog
+(at `/queryables`) and per collection (at `/collections/{collectionId}/queryables`).
+The decision as to which queryables to define for the entire catalog is at the discretion
+of the implementer, and can be anywhere between none and the union of all
 queryables across all collections.
 
 By default, the queryables are the only terms that may be used
@@ -488,7 +496,7 @@ This example uses the queryables definition in (Interaction with Endpoints)(#int
 Note that `filter-lang` defaults to `cql2-text` in this case. The parameter `filter-crs` defaults
 to `http://www.opengis.net/def/crs/OGC/1.3/CRS84` for a STAC API.
 
-```
+```text
 filter=id='LC08_L1TP_060247_20180905_20180912_01_T1_L1TP' AND collection='landsat8_l1tp'
 ```
 
@@ -524,7 +532,7 @@ OGC API Features filters only operate against a single collection already.
 
 #### Example 2: GET with cql2-text
 
-```
+```text
 filter=collection = 'landsat8_l1tp'
   AND eo:cloud_cover <= 10
   AND datetime >= TIMESTAMP('2021-04-08T04:39:23Z')
@@ -676,7 +684,7 @@ a tiny sliver of data.
 
 #### Example 3: AND cql2-text (GET)
 
-```
+```text
 filter=sentinel:data_coverage > 50 AND eo:cloud_cover < 10
 ```
 
@@ -710,7 +718,7 @@ This uses the same queryables as Example 3.
 
 #### Example 4: OR cql2-text (GET)
 
-```
+```text
 filter=sentinel:data_coverage > 50 OR eo:cloud_cover < 10
 ```
 
@@ -766,7 +774,7 @@ This queryables JSON Schema is used in these examples:
 
 #### Example 5: GET with cql2-text
 
-```
+```text
 filter=prop1 = prop2
 ```
 
@@ -794,7 +802,7 @@ have any overlap between them.
 
 #### Example 6: T_INTERSECTS cql2-text (GET)
 
-```
+```text
 filter=T_INTERSECTS(datetime, INTERVAL('2020-11-11T00:00:00Z', '2020-11-12T00:00:00Z'))
 ```
 
@@ -822,7 +830,7 @@ format uses GeoJSON geometries.
 
 #### Example 7: S_INTERSECTS cql2-text (GET)
 
-```
+```text
 filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189 38.8351,-77.0824 38.8351,-77.0824 38.7886)))
 ```
 
@@ -857,7 +865,7 @@ logical operator.
 
 #### Example 8: S_INTERSECTS cql2-text (GET)
 
-```
+```text
 filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189 38.8351,-77.0824 38.8351,-77.0824 38.7886))) OR S_INTERSECTS(geometry,POLYGON((-79.0935 38.7886,-79.0290 38.7886,-79.0290 38.8351,-79.0935 38.8351,-79.0935 38.7886)))
 ```
 
@@ -913,7 +921,7 @@ either of those properties.
 
 #### Example 9: cql2-text (GET)
 
-```
+```text
 filter=sentinel:data_coverage > 50 OR landsat:coverage_percent < 10 OR (sentinel:data_coverage IS NULL AND landsat:coverage_percent IS NULL)
 ```
 
@@ -957,7 +965,7 @@ The BETWEEN operator allows for checking if a numeric value is within a specifie
 
 #### Example 10: cql2-text (GET)
 
-```
+```text
 filter=eo:cloud_cover BETWEEN 0 AND 50
 ```
 
@@ -982,7 +990,7 @@ The LIKE operator allows for pattern-based string matching.
 
 #### Example 11: cql2-text (GET)
 
-```
+```text
 filter=mission LIKE 'sentinel%'
 ```
 
@@ -1012,11 +1020,11 @@ insensitive representation whereby the expressions `CASEI('Straße')`, `CASEI('s
 
 #### Example 12: cql2-text (GET)
 
-```
+```text
 filter=CASEI(provider) = CASEI('coolsat')
 ```
 
-```
+```text
 filter=CASEI(provider) = CASEI('Straße')
 ```
 
@@ -1068,7 +1076,7 @@ defined in the Accent and Case-insensitive Comparison conformance class. In the 
 
 #### Example 13: cql2-text (GET)
 
-```
+```text
 filter=ACCENTI(provider) = ACCENTI('tiburón')
 ```
 
