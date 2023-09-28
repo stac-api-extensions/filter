@@ -80,7 +80,7 @@
 The Filter extension provides an expressive mechanism for searching based on Item attributes.
 
 This extension references behavior defined in the
-[OGC API - Features - Part 3: Filtering and the Common Query Language (CQL2)](https://github.com/opengeospatial/ogcapi-features/tree/master/extensions/cql) and [Common Query Language (CQL2)
+[OGC API - Features - Part 3: Filtering and the Common Query Language (CQL2)](https://github.com/opengeospatial/ogcapi-features/tree/master/extensions/filtering) and [Common Query Language (CQL2)
 ](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/README.md)
 specifications. As of November 2021, these specifications are still in draft status, but rapidly converging on
 finalized behavior. Several behaviors have changed since the
