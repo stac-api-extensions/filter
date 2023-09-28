@@ -134,6 +134,8 @@ components:
         **Extension:** Filter
 
         A filter for properties in Items.
+      allOf: # Combines the searchBody of Item-filter and the inline model
+        - $ref: "https://api.stacspec.org/v1.0.0/item-search/openapi.yaml#/components/schemas/searchBody"
       properties:
         filter:
           $ref: '#/components/schemas/filter-cql2-json'
