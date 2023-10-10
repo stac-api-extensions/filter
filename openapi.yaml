@@ -11,6 +11,8 @@ tags:
     description: Part of STAC API - Collections definition
   - name: Features
     description: Part of STAC API - Features definition
+  - name: Item Search 
+    description: Part of STAC API - Item Search definition
   - name: Filter Extension
     description: Part of STAC API - Filter extension definition
 
@@ -80,22 +82,27 @@ paths:
         collection of features of a similar type, based on a common schema.
       operationId: getFeatures
       parameters:
-        - $ref: "#/components/parameters/collectionId"
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/bbox"
-        - $ref: "#/components/parameters/datetime"
+        - in: path
+          name: collectionId
+          schema:
+            type: string
+          required: true
+          description: ID of Collection
+        - $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/parameters/limit"
+        - $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/parameters/bbox"
+        - $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/parameters/datetime"
         - $ref: "#/components/parameters/filter"
         - $ref: "#/components/parameters/filter-lang"
         - $ref: "#/components/parameters/filter-crs"
       responses:
         "200":
-          $ref: "#/components/responses/Features"
+          $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/responses/Features"
         "404":
-          $ref: "#/components/responses/NotFound"
+          $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/responses/NotFound"
         "4XX":
-          $ref: "../core/commons.yaml#/components/responses/Error"
+          $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/responses/Error"
         "5XX":
-          $ref: "../core/commons.yaml#/components/responses/Error"
+          $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/responses/Error"
   /collections/{collectionId}/queryables:
     get:
       summary: Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
@@ -143,7 +150,7 @@ paths:
           content:
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/itemCollection"
+                $ref: "https://api.stacspec.org/v1.0.0/item-search/openapi.yaml#/components/schemas/itemCollection"
             text/html:
               schema:
                 type: string
@@ -174,7 +181,7 @@ paths:
           content:
             application/geo+json:
               schema:
-                $ref: "#/components/schemas/itemCollection"
+                $ref: "https://api.stacspec.org/v1.0.0/item-search/openapi.yaml#/components/schemas/itemCollection"
             text/html:
               schema:
                 type: string
