@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Fixed several issues with OpenAPI specification
 - Basic Spatial Operators in CQL2 now only requires BBOX and POINT support, so the text
   and examples were updated to account for this.
 
