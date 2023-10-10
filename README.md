@@ -58,21 +58,21 @@
 - **Title:** Filter
 - **OpenAPI specification:** [openapi.yaml](openapi.yaml)
 - **Conformance Classes:**
-  - Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter>
-  - Features Filter: <http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter>
-  - Item Search Filter: <https://api.stacspec.org/v1.0.0-rc.2/item-search#filter>
-  - CQL2 Text: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-text>
-  - CQL2 JSON: <http://www.opengis.net/spec/cql2/1.0/conf/cql2-json>
-  - Basic CQL2: <http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2>
-  - Advanced Comparison Operators: <http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators>
-  - Basic Spatial Operators: <http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators>
-  - Spatial Operators: <http://www.opengis.net/spec/cql2/1.0/conf/spatial-operators>
-  - Temporal Operators: <http://www.opengis.net/spec/cql2/1.0/conf/temporal-operators>
-  - Custom Functions: <http://www.opengis.net/spec/cql2/1.0/conf/functions>
-  - Arithmetic Expressions: <http://www.opengis.net/spec/cql2/1.0/conf/arithmetic>
-  - Array Operators: <http://www.opengis.net/spec/cql2/1.0/conf/array-operators>
-  - Property-Property Comparisons: <http://www.opengis.net/spec/cql2/1.0/conf/property-property>
-  - Accent and Case-insensitive Comparison: <http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison>
+  - Filter: `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter`
+  - Features Filter: `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter`
+  - Item Search Filter: `https://api.stacspec.org/v1.0.0-rc.2/item-search#filter`
+  - CQL2 Text: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-text`
+  - CQL2 JSON: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-json`
+  - Basic CQL2: `http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2`
+  - Advanced Comparison Operators: `http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators`
+  - Basic Spatial Operators: `http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators`
+  - Spatial Operators: `http://www.opengis.net/spec/cql2/1.0/conf/spatial-operators`
+  - Temporal Operators: `http://www.opengis.net/spec/cql2/1.0/conf/temporal-operators`
+  - Custom Functions: `http://www.opengis.net/spec/cql2/1.0/conf/functions`
+  - Arithmetic Expressions: `http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`
+  - Array Operators: `http://www.opengis.net/spec/cql2/1.0/conf/array-operators`
+  - Property-Property Comparisons: `http://www.opengis.net/spec/cql2/1.0/conf/property-property`
+  - Accent and Case-insensitive Comparison: `http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison`
 - **Scope:** STAC API - Features, STAC API - Item Search
 - **[Extension Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Pilot
 - **Dependencies:**
@@ -238,9 +238,9 @@ Formal definitions and grammars for CQL2 can be found in the
 a BNF grammar for CQL2 Text and both a JSON Schema and an OpenAPI specification for CQL2 JSON.
 The standalone files are:
   
-- [cql.bnf](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.bnf)
-- [cql.json](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.json)
-- [cql.yml](https://github.com/opengeospatial/ogcapi-features/blob/master/extensions/cql/standard/schema/cql.yml)
+- [cql2.bnf](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/standard/schema/cql2.bnf)
+- [cql2.json](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/standard/schema/cql2.json)
+- [cql2.yml](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/standard/schema/cql2.yml)
 
 These projects have or are developing CQL2 support:
 
@@ -253,7 +253,7 @@ These projects have or are developing CQL2 support:
 - [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
 - [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
 
-Note that the [xbib CQL library (JVM)](https://github.com/xbib/cql) is the OASIS Contextual Query Language, not
+Note that the xbib CQL library (JVM) is the OASIS Contextual Query Language, not
 OGC CQL, and should not be used to implement this extension, as they are significantly different query languages.
 [Stacatto](https://github.com/planetlabs/staccato) uses this for their query language implementation, but it is
 not compliant with this extension.
