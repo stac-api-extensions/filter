@@ -1140,3 +1140,34 @@ filter=ACCENTI(provider) = ACCENTI('tiburón')
   }
 }
 ```
+
+### Example 15: Using the IN List predicate
+
+The predefined function `IN` allows for checking if a value is in a list of values.
+
+#### Example 15: cql2-text (GET)
+
+```text
+filter=keywords IN ('fire', 'forest', 'wildfire')
+```
+
+#### Example 15: cql2-json (POST)
+
+```json
+{
+    "filter-lang": "cql2-json",
+    "filter": {
+        "op": "in",
+        "args": [
+            {
+                "property": "keywords"
+            },
+            [
+                "fire",
+                "forest",
+                "wildfire"
+            ]
+        ]
+    }
+}
+```

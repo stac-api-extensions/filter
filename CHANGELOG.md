@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - TBD
 
+### Added
+
+- IsInListPredicate example
+
 ### Changed
 
 - Basic Spatial Operators in CQL2 now only requires BBOX and POINT support, so the text
