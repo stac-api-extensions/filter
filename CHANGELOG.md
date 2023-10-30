@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and examples were updated to account for this.
 - Fixed the CQL2 JSON between operator example to use 3 items array
 
+### Added
+
+- References [DotNetStac.Api](https://github.com/Terradue/DotNetStac.Api) for its support
+    for [CQL2 JSON](https://github.com/Terradue/DotNetStac.Api/blob/5e7334e95da92ca19f9e9b75c476f362ae24a6da/src/Stac.Api/Models/Cql2/CQL2.cs)
+
 ## [v1.0.0-rc.2] - 2022-11-01
 
 ### Changed
