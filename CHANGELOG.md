@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.0.0-rc.3] - 2023-10-18
 
+### Added
+
+- IsInListPredicate example
+
 ### Changed
 
 - Fixed several issues with OpenAPI specification
