@@ -73,13 +73,12 @@
   - Array Operators: `http://www.opengis.net/spec/cql2/1.0/conf/array-operators`
   - Property-Property Comparisons: `http://www.opengis.net/spec/cql2/1.0/conf/property-property`
   - Accent and Case-insensitive Comparison: `http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison`
-  - Queryables Transactions: `https://api.stacspec.org/v1.0.0/ogcapi-features/extensions/transaction#queryables`
+  - Queryables Transactions: `https://api.stacspec.org/v1.0.0/queryables/extensions/transaction`
 - **Scope:** STAC API - Features, STAC API - Item Search
 - **[Extension Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Pilot
 - **Dependencies:**
   - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/item-search)
   - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/ogcapi-features)
-  - [STAC API - Transactions](https://github.com/stac-api-extensions/transaction/tree/v1.0.0-rc.3)
 - **Owner**: @philvarner
 
 The Filter extension provides an expressive mechanism for searching based on Item attributes.
@@ -218,7 +217,7 @@ For additional capabilities, the following classes may be implemented:
   Basic CQL2 conformance class only requires comparisons against right-hand-side literals.
 - Accent and Case-insensitive Comparison: (`http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison`)
   defines the UPPER and LOWER functions that can be used for case-insensitive comparison.
-- Queryables Transactions: (`https://api.stacspec.org/v1.0.0/ogcapi-features/extensions/transaction#queryables`)
+- Queryables Transactions: (`https://api.stacspec.org/v1.0.0/queryables/extensions/transaction`)
   allow to update queryables properties on a per catalog and/or per collection basis.
 
 Additionally, if an API implements the OGC API Features endpoint, it is **recommended** that the OAFeat Part 3 Filter,
@@ -375,7 +374,7 @@ in STAC API by the Filter Extension. In this case, the queryables endpoint (`/qu
 Implementers can choose to allow users to update default queryables on a per Catalog and/ or per Collection basis.
 In that case, the `/queryables` endpoints should be callable using the `PUT` method with a payload containing the new queryables object. After updating the endpoint, a server-side process will have to ensure that the newly exposed fields can be queried for the Catalog or Collection or otherwise reject the request.
 
-In addition to adding the PUT method to the queryables endpoint, implementers will also need to add the conformance class `https://api.stacspec.org/v1.0.0/ogcapi-features/extensions/transaction#queryables` to their API to advertise the added capabilities.
+In addition to adding the PUT method to the queryables endpoint, implementers will also need to add the conformance class `https://api.stacspec.org/v1.0.0/queryables/extensions/transaction` to their API to advertise the added capabilities.
 
 ## GET Query Parameters and POST JSON fields
 
