@@ -68,17 +68,18 @@
   - CQL2 JSON: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-json`
   - Basic CQL2: `http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2`
   - Advanced Comparison Operators: `http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators`
+  - Case-insensitive Comparison: `http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison`
+  - Accent-insensitive Comparison: `http://www.opengis.net/spec/cql2/1.0/conf/accent-insensitive-comparison`
   - Basic Spatial Functions: `http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions`
-  - Basic Spatial Functions with additional Spatial Data Types: `http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions-plus`
+  - Basic Spatial Functions with additional Spatial Literals: `http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions-plus`
   - Spatial Functions: `http://www.opengis.net/spec/cql2/1.0/conf/spatial-functions`
   - Temporal Functions: `http://www.opengis.net/spec/cql2/1.0/conf/temporal-functions`
-  - Custom Functions: `http://www.opengis.net/spec/cql2/1.0/conf/functions`
-  - Arithmetic Expressions: `http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`
   - Array Functions: `http://www.opengis.net/spec/cql2/1.0/conf/array-functions`
   - Property-Property Comparisons: `http://www.opengis.net/spec/cql2/1.0/conf/property-property`
-  - Accent and Case-insensitive Comparison: `http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison`
+  - Functions: `http://www.opengis.net/spec/cql2/1.0/conf/functions`
+  - Arithmetic Expressions: `http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`
 - **Scope:** STAC API - Features, STAC API - Item Search
-- **[Extension Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Pilot
+- **[Extension Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Candidate
 - **Dependencies:**
   - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/item-search)
   - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/ogcapi-features)
@@ -87,33 +88,27 @@
 The Filter extension provides an expressive mechanism for searching based on Item attributes.
 
 This extension references behavior defined in the
-[OGC API - Features - Part 3: Filtering and the Common Query Language (CQL2)](https://github.com/opengeospatial/ogcapi-features/tree/master/extensions/filtering) and [Common Query Language (CQL2)
-](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/README.md)
-specifications. As of November 2021, these specifications are still in draft status, but rapidly converging on
-finalized behavior. Several behaviors have changed since the
-last published [draft](https://portal.ogc.org/files/96288), so this spec references the latest revision in the
-[OAFeat Part 3 spec's GitHub repo](https://github.com/opengeospatial/ogcapi-features/tree/master/extensions/cql)
-and [Common Query Language (CQL2)](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/README.md)).
-Implementers should proceed with implementation, but must be aware that minor changes may be made
-before these specs are final.
+[OGC API - Features - Part 3: Filtering Version 1.0](https://docs.ogc.org/is/19-079r2/19-079r2.html)
+and [Common Query Language (CQL2) Version 1.0.0](https://docs.ogc.org/is/21-065r2/21-065r2.html)
+specifications.
 
-OAFeat Part 3 CQL2 formally defines the syntax of "CQL2" as both a text format (cql2-text) as an ABNF grammar
+CQL2 formally defines syntax in both a text format (cql2-text) as an ABNF grammar
 (largely similar to the BNF grammar in the General Model for CQL) and a JSON format (cql2-json) as a JSON Schema and
 OpenAPI schema. Additionally, it defines a natural
 language description of the declarative semantics, which were never well-defined for the original CQL language.
 The CQL2 Text format has had long-standing use within
-geospatial software (e.g., GeoServer), is not expected to change before final.
-OGC CQL2 Text has been previously described in [OGC Filter Encoding](https://www.ogc.org/standards/filter) and
+geospatial software (e.g., GeoServer).
+CQL2 Text has been previously described in [OGC Filter Encoding](https://www.ogc.org/standards/filter) and
 [OGC Catalogue Services 3.0 - General Model](http://docs.opengeospatial.org/is/12-168r6/12-168r6.html#62)
-(including a BNF grammar in Annex B). The CQL2 JSON format is newly-defined and has changed significantly during
-the draft process, but is believed to be stable now.
+(including a BNF grammar in Annex B). The CQL2 JSON format is newly-defined.
 
-It should be noted that the "CQL" referred to here is "CQL2" defined in OGC API - Features - Part 3. This is a related, but
+It should be noted that the "CQL" referred to here is CQL2 defined in the OGC 
+[Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html) specification. This is a related, but
 different language to the "classic" OGC CQL defined in the General Model. Relatedly, CQL is **not**
-referencing or related two other "CQL" languages,
+referencing or related to other "CQL" languages, including
 the [SRU (Search/Retrieve via URL) Contextual Query Language](https://www.loc.gov/standards/sru/cql/index.html) (formerly
-known as Common Query Language) or the [Cassandra Query Language](https://cassandra.apache.org/doc/latest/cql/) used by the
-Cassandra database.
+known as Common Query Language), the [Cassandra Query Language](https://cassandra.apache.org/doc/latest/cql/) used by the
+Cassandra database, or the OASIS Contextual Query Language.
 
 ## Limitations of Item Search
 
@@ -134,7 +129,7 @@ multiple spatial or temporal filters.
 ## Filter Expressiveness
 
 This extension expands the capabilities of Item Search and the OAFeat Items resource with
-[OAFeat Part 3 CQL2](https://portal.ogc.org/files/96288)
+[Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html)
 by providing an expressive query language to construct more complex filter predicates using operators that are similar to
 those provided by SQL. This extension also supports the Queryables mechanism that allows discovery of what Item fields can be used in
 predicates.
@@ -149,13 +144,14 @@ CQL2 enables more expressive queries than supported by STAC API Item Search. The
 
 ## Conformance Classes
 
-OAFeat Part 3 CQL2 defines several conformance classes that allow implementers to create compositions of
-functionality that support whatever expressiveness they need. This allows implementers to incrementally support CQL
+The OAFeat Part 3 - Filter and CQL2 specifications define several conformance classes that allow implementers
+to create compositions of
+functionality that support whatever expressiveness they need. This allows implementers to incrementally support CQL2
 syntax, without needing to implement a large specification all at once.  Some implementers choose not to incur the cost of
 implementing functionality they do not need or may not be able to implement functionality that is not supported by
 their underlying datastore, e.g., Elasticsearch does not support the spatial predicates required by the
 Spatial Functions conformance class, only the `S_INTERSECTS` function against geometries in the
-Basic Spatial Functions with additional Spatial Data Types class.
+Basic Spatial Functions with additional Spatial Literals class.
 
 The STAC API Filter Extension reuses the definitions and conformance classes in OAFeat CQL,
 adding only the *Item Search Filter* conformance class
@@ -197,7 +193,7 @@ For additional capabilities, the following classes may be implemented:
   `lower` and `upper` functions.
 - Basic Spatial Functions (`http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions`) defines the intersects function (`S_INTERSECTS`)
   that accepts only a BBOX or Point parameter.
-- Basic Spatial Functions with additional Spatial Data Types
+- Basic Spatial Functions with additional Spatial Literals
   (`http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions-plus`) defines the
   intersects function (`S_INTERSECTS`)
   to accept any geometry data type, including Point, MultiPoint, LineString, MultiLineString,
@@ -214,7 +210,7 @@ For additional capabilities, the following classes may be implemented:
   functions that provide more expressivity with datetime types than the relative comparison
   operators
   in the Basic CQL2 class.
-- Custom Functions (`http://www.opengis.net/spec/cql2/1.0/conf/functions`) defines support
+- Functions (`http://www.opengis.net/spec/cql2/1.0/conf/functions`) defines support
   for function definition and usage.
 - Arithmetic Expressions: (`http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`) defines
   support for arithmetic expressions.
@@ -244,7 +240,7 @@ implementing CQL2 Text. From there, other comparison operators can be implemente
 dynamic Queryables schema.
 
 Formal definitions and grammars for CQL2 can be found in the
-[OAFeat CQL spec](https://github.com/opengeospatial/ogcapi-features/tree/master/cql2) includes
+[OAFeat CQL2 spec](https://github.com/opengeospatial/ogcapi-features/tree/master/cql2) includes
 a BNF grammar for CQL2 Text and both a JSON Schema and an OpenAPI specification for CQL2 JSON.
 The standalone files are:
   
@@ -876,7 +872,7 @@ filter=S_INTERSECTS(geometry,POINT(-77.0824 38.7886))
 
 ### Example 8: Spatial Intersection
 
-The Basic Spatial Functions with additional Spatial Data Types class extends
+The Basic Spatial Functions with additional Spatial Literals class extends
 the Basic Spatial Functions class by adding support for additional
 geometries to the `S_INTERSECTS` parameter. This has the same semantics as provided
 by the Item Search `intersects` parameter.  The `cql2-text` format uses WKT geometries and the `cql2-json`

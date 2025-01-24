@@ -24,7 +24,7 @@ jobs:
   validate:
     working_directory: ~/stac
     docker:
-      - image: cimg/node:16.14
+      - image: cimg/node:22
     steps:
       - checkout
       - save_cache:
