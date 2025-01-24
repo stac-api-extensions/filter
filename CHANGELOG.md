@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - TBD
+
+### Changed
+
+- Added Basic Spatial Functions with additional Spatial Literals definition, which defines
+  a class that has only S_INTERSECTS over all geometry data types
+- Renamed Basic Spatial Operators to Basic Spatial Functions
+- Renamed Spatial Operators to Spatial Functions
+- Renamed Temporal Operators to Temporal Functions
+- Renamed Array Operators to Array Functions
+- Accent- and Case-insensitive Comparison conformance classes have been split into two conformance classes,
+  Accent-insensitive Comparison and Case-insensitive Comparison
+- Renamed Custom Function to Functions
+
 ## [v1.0.0-rc.3] - 2023-10-18
 
 ### Added
