@@ -63,7 +63,7 @@
 - **Conformance Classes:**
   - Filter: `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter`
   - Features Filter: `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter`
-  - Item Search Filter: `https://api.stacspec.org/v1.0.0-rc.3/item-search#filter`
+  - Item Search Filter: `https://api.stacspec.org/v1.0.0/item-search#filter`
   - CQL2 Text: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-text`
   - CQL2 JSON: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-json`
   - Basic CQL2: `http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2`
@@ -155,7 +155,7 @@ Basic Spatial Functions with additional Spatial Literals class.
 
 The STAC API Filter Extension reuses the definitions and conformance classes in OAFeat CQL,
 adding only the *Item Search Filter* conformance class
-(`https://api.stacspec.org/v1.0.0-rc.3/item-search#filter`) to bind
+(`https://api.stacspec.org/v1.0.0/item-search#filter`) to bind
 the Filter behavior to the Item Search endpoint.
 
 The implementation **must** support these conformance classes:
@@ -166,7 +166,7 @@ The implementation **must** support these conformance classes:
   the query language used for the `filter` parameter defined by Filter. This includes logical operators (`AND`, `OR`, `NOT`),
   comparison operators (`=`, `<>`, `<`, `<=`, `>`, `>=`), and `IS NULL`. The comparison operators are allowed against
   string, numeric, boolean, date, and datetime types.
-- Item Search Filter (`https://api.stacspec.org/v1.0.0-rc.3/item-search#filter`) binds the Filter and
+- Item Search Filter (`https://api.stacspec.org/v1.0.0/item-search#filter`) binds the Filter and
   Basic CQL2 conformance classes to apply to the Item Search endpoint (`/search`).  This class is the correlate of the OAFeat CQL2 Features
   Filter class that binds Filter and Basic CQL2 to the Features resource (`/collections/{cid}/items`).
 
@@ -404,7 +404,7 @@ at least these values:
     "http://api.stacspec.org/v1.0.0/core",
     "http://api.stacspec.org/v1.0.0/item-search",
 
-    "https://api.stacspec.org/v1.0.0-rc.3/item-search#filter"
+    "https://api.stacspec.org/v1.0.0/item-search#filter"
     "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
     "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
     "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
