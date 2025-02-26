@@ -284,7 +284,7 @@ returned according to OAFeat Part 3. It is recognized that this is a severe rest
 and dynamic content, so this behavior may be modified by setting the `additionalProperties` attribute in the
 queryables definition to `true`.  As such, any syntactically-valid term for a property will be accepted, and the
 matching semantics are such that, if an Item does not have an attribute by that name, the value is assumed to be
-`null`.  It is recommended to use fully-qualified property names (e.g., `properties.eo:cloud_cover`).
+`null`.
 
 Queryables are advertised via a JSON Schema document retrieved from the `/queryables` endpoint. This endpoint at the root
 retrieves queryables that apply to all collections. When used as a subresource of the collection resource

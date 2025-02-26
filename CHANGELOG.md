@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Accent- and Case-insensitive Comparison conformance classes have been split into two conformance classes,
   Accent-insensitive Comparison and Case-insensitive Comparison
 - Renamed Custom Function to Functions
+- Remove recommendation to use fully-qualified property names as queryables.
 
 ## [v1.0.0-rc.3] - 2023-10-18
 
