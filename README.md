@@ -250,19 +250,22 @@ The standalone files are:
 
 These projects have or are developing CQL2 support:
 
-- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac) has support for
-  CQL2 Text and CQL2 JSON, via using [pygeofilter](https://github.com/geopython/pygeofilter)
+- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac), a Python FastAPI STAC API server with a
+  PostgreSQL database backend, has support for the Filter Extension with CQL2 Text and CQL2 JSON, via using [pygeofilter](https://github.com/geopython/pygeofilter)
   to translate CQL2 Text to CQL2 JSON and processing the CQL2 JSON with
   [pgstac](https://github.com/stac-utils/pgstac)
-- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON,
-  including the ability to convert from CQL2 Text to CQL2 JSON
-- [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
-- [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
+- [stac-fastapi-elasticsearch-opensearch)](https://github.com/stac-utils/stac-fastapi-elasticsearch-opensearch), a Python FastAPI
+  STAC API server with an OpenSearch or Elasticsearch database backend, has support for the Filter Extension with CQL2 JSON
+- [stac-server](https://github.com/stac-utils/stac-server), a Node.js STAC API server with an OpenSearch database backend,
+  has support for the Filter Extension with CQL2 JSON
 - [DotNetStac.Api](https://github.com/Terradue/DotNetStac.Api) has support for [CQL2 JSON](https://github.com/Terradue/DotNetStac.Api/blob/5e7334e95da92ca19f9e9b75c476f362ae24a6da/src/Stac.Api/Models/Cql2/CQL2.cs)
   and implements [Linq extensions](https://github.com/Terradue/DotNetStac.Api/blob/6916507eaf21554872f5c03102d6c144e565e8f5/src/Stac.Api/Models/Cql2/Cql2Linq.cs)
   to build [expressions trees](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/expression-trees) from CQL2.
   It also includes a [default query provider](https://github.com/Terradue/DotNetStac.Api/blob/ea93d783e024e7a8e64dacf06ccb62b94779bd2d/src/Stac.Api/Services/Queryable/StacQueryProvider.cs)
   for STAC object enumerables implemented in [DotNetStac](https://github.com/Terradue/DotNetStac).
+- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON,
+- [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
+- [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
 
 Note that the xbib CQL library (JVM) is the OASIS Contextual Query Language, not
 OGC CQL, and should not be used to implement this extension, as they are significantly different query languages.
