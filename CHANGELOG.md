@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Added Basic Spatial Functions with additional Spatial Literals definition, which defines
+  a class that has only S_INTERSECTS over all geometry data types
+- Renamed Basic Spatial Operators to Basic Spatial Functions
+- Renamed Spatial Operators to Spatial Functions
+- Renamed Temporal Operators to Temporal Functions
+- Renamed Array Operators to Array Functions
+- Accent- and Case-insensitive Comparison conformance classes have been split into two conformance classes,
+  Accent-insensitive Comparison and Case-insensitive Comparison
+- Renamed Custom Function to Functions
 - Remove recommendation to use fully-qualified property names as queryables.
 
 ## [v1.0.0-rc.3] - 2023-10-18
