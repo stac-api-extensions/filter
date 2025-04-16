@@ -323,7 +323,7 @@ filtered with the CQL2 expression `'nir' in assets_bands`. Implementations would
 appropriate query against its database.
 
 An implementation may also choose not to advertise any queryables, and provide the user with out-of-band information or
-simply let them try querying against fields. . In this case, the queryables endpoint (`/queryables`) would return this document:
+simply let them try querying against fields. In this case, the queryables endpoint (`/queryables`) would return this document:
 
 ```json
 {
