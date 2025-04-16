@@ -5,7 +5,6 @@
   - [Limitations of Item Search](#limitations-of-item-search)
   - [Filter Expressiveness](#filter-expressiveness)
   - [Conformance Classes](#conformance-classes)
-  - [Getting Started with Implementation](#getting-started-with-implementation)
   - [Queryables](#queryables)
   - [GET Query Parameters and POST JSON fields](#get-query-parameters-and-post-json-fields)
   - [Interaction with Endpoints](#interaction-with-endpoints)
@@ -29,8 +28,10 @@
       - [Example 6: T\_INTERSECTS cql2-text (GET)](#example-6-t_intersects-cql2-text-get)
       - [Example 6: T\_INTERSECTS cql2-json (POST)](#example-6-t_intersects-cql2-json-post)
     - [Example 7: Spatial Intersection in Basic Spatial Functions](#example-7-spatial-intersection-in-basic-spatial-functions)
-      - [Example 7: S\_INTERSECTS cql2-text (GET)](#example-7-s_intersects-cql2-text-get)
-      - [Example 7: S\_INTERSECTS cql2-json (POST)](#example-7-s_intersects-cql2-json-post)
+      - [Example 7A: S\_INTERSECTS with Point cql2-text (GET)](#example-7a-s_intersects-with-point-cql2-text-get)
+      - [Example 7A: S\_INTERSECTS with Point cql2-json (POST)](#example-7a-s_intersects-with-point-cql2-json-post)
+      - [Example 7A: S\_INTERSECTS with Bounding Box cql2-text (GET)](#example-7a-s_intersects-with-bounding-box-cql2-text-get)
+      - [Example 7A: S\_INTERSECTS with Bounding Box cql2-json (POST)](#example-7a-s_intersects-with-bounding-box-cql2-json-post)
     - [Example 8: Spatial Intersection](#example-8-spatial-intersection)
       - [Example 8: S\_INTERSECTS cql2-text (GET)](#example-8-s_intersects-cql2-text-get)
       - [Example 8: S\_INTERSECTS cql2-json (POST)](#example-8-s_intersects-cql2-json-post)
@@ -47,11 +48,11 @@
       - [Example 12: cql2-text (GET)](#example-12-cql2-text-get)
       - [Example 12: cql2-json (POST)](#example-12-cql2-json-post)
     - [Example 13: Using the CASEI Case-insensitive Comparison Function](#example-13-using-the-casei-case-insensitive-comparison-function)
-      - [Example 13: cql2-text (GET)](#example-13-cql2-text-get)
-      - [Example 13: cql2-json (POST)](#example-13-cql2-json-post)
+      - [Example 13: CASEI cql2-text (GET)](#example-13-casei-cql2-text-get)
+      - [Example 13: CASEI cql2-json (POST)](#example-13-casei-cql2-json-post)
     - [Example 14: Using the ACCENTI Accent-insensitive Comparison Function](#example-14-using-the-accenti-accent-insensitive-comparison-function)
-      - [Example 14: cql2-text (GET)](#example-14-cql2-text-get)
-      - [Example 14: cql2-json (POST)](#example-14-cql2-json-post)
+      - [Example 14: ACCENTI cql2-text (GET)](#example-14-accenti-cql2-text-get)
+      - [Example 14: ACCENTI cql2-json (POST)](#example-14-accenti-cql2-json-post)
     - [Example 15: Using the IN List predicate](#example-15-using-the-in-list-predicate)
       - [Example 15: cql2-text (GET)](#example-15-cql2-text-get)
       - [Example 15: cql2-json (POST)](#example-15-cql2-json-post)
@@ -85,30 +86,35 @@
   - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/ogcapi-features)
 - **Owner**: @philvarner
 
-The Filter extension provides an expressive mechanism for searching based on Item attributes.
+The Filter Extension provides an expressive mechanism for searching a STAC API catalog based on 
+Item attribute values using [Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html)
+expressions.
 
 This extension references behavior defined in the
 [OGC API - Features - Part 3: Filtering Version 1.0](https://docs.ogc.org/is/19-079r2/19-079r2.html)
 and [Common Query Language (CQL2) Version 1.0.0](https://docs.ogc.org/is/21-065r2/21-065r2.html)
 specifications.
 
-CQL2 formally defines syntax in both a text format (cql2-text) as an ABNF grammar
-(largely similar to the BNF grammar in the General Model for CQL) and a JSON format (cql2-json) as a JSON Schema and
-OpenAPI schema. Additionally, it defines a natural
-language description of the declarative semantics, which were never well-defined for the original CQL language.
-The CQL2 Text format has had long-standing use within
-geospatial software (e.g., GeoServer).
-CQL2 Text has been previously described in [OGC Filter Encoding](https://www.ogc.org/standards/filter) and
+CQL2 formally defines syntax in both a text format, CQL2 Text, as an ABNF grammar and a JSON format,
+CQL2 JSON, as both a JSON Schema and an OpenAPI schema. Additionally, it defines a natural
+language description of the declarative semantics, which were never well-defined for the CQL2's predecessor,
+OGC CQL.  The original OGC CQL text format is defined in
 [OGC Catalogue Services 3.0 - General Model](http://docs.opengeospatial.org/is/12-168r6/12-168r6.html#62)
-(including a BNF grammar in Annex B). The CQL2 JSON format is newly-defined.
+and has had long-standing use within
+geospatial software (e.g., GeoServer), and the CQL2 Text format is derived from this prior work.
+The CQL2 JSON format is newly-defined.
 
-It should be noted that the "CQL" referred to here is CQL2 defined in the OGC 
-[Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html) specification. This is a related, but
-different language to the "classic" OGC CQL defined in the General Model. Relatedly, CQL is **not**
-referencing or related to other "CQL" languages, including
-the [SRU (Search/Retrieve via URL) Contextual Query Language](https://www.loc.gov/standards/sru/cql/index.html) (formerly
-known as Common Query Language), the [Cassandra Query Language](https://cassandra.apache.org/doc/latest/cql/) used by the
-Cassandra database, or the OASIS Contextual Query Language.
+Unfortunately, there are several overloaded uses of the term "CQL" that cause confusion. In this specification,
+we are always referring to CQL2 defined in the OGC
+[Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html) specification.
+This is different from:
+
+- "classic" OGC CQL defined in the OGC Catalogue Services 3.0 - General Model
+- [SRU (Search/Retrieve via URL) Contextual Query Language](https://www.loc.gov/standards/sru/cql/index.html) (formerly
+known as Common Query Language)
+- [Cassandra Query Language](https://cassandra.apache.org/doc/latest/cql/) used by the
+Cassandra database
+- OASIS Contextual Query Language
 
 ## Limitations of Item Search
 
@@ -123,7 +129,7 @@ The STAC Item Search specification extends the functionality of OAFeat in a few 
 - It allows filtering based on a single GeoJSON Geometry, rather than only a bbox (`intersects` parameter)
 
 However, it does not contain a formalized way to filter based on arbitrary fields in an Item. For example, there is
-no way to express the filter "item.properties.eo:cloud_cover is less than 10". It also does not have a way to logically combine
+no way to express the filter "item/properties/eo:cloud_cover is less than 10". It also does not have a way to logically combine
 multiple spatial or temporal filters.
 
 ## Filter Expressiveness
@@ -131,12 +137,13 @@ multiple spatial or temporal filters.
 This extension expands the capabilities of Item Search and the OAFeat Items resource with
 [Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html)
 by providing an expressive query language to construct more complex filter predicates using operators that are similar to
-those provided by SQL. This extension also supports the Queryables mechanism that allows discovery of what Item fields can be used in
-predicates.
+those provided by SQL. This extension also supports the Queryables mechanism that allows discovery of what
+Item fields can be used as terms in CQL2 expressions.
 
 CQL2 enables more expressive queries than supported by STAC API Item Search. These include:
 
-- Use of Item Property values in predicates (e.g., `item.properties.eo:cloud_cover`), using comparison operators
+- Use of Item Property values in predicates (e.g., `eo:cloud_cover` referencing the field
+  "item/properties/eo:cloud_cover"), using comparison operators
 - Items whose `datetime` values are in the month of August of the years 2017-2021, using OR and datetime comparisons
 - Items whose `geometry` values intersect any one of several Polygons, using `OR` and `S_INTERSECTS`
 - Items whose `geometry` values intersect one Polygon, but do not intersect another one, using AND, NOT, and
@@ -149,11 +156,11 @@ to create compositions of
 functionality that support whatever expressiveness they need. This allows implementers to incrementally support CQL2
 syntax, without needing to implement a large specification all at once.  Some implementers choose not to incur the cost of
 implementing functionality they do not need or may not be able to implement functionality that is not supported by
-their underlying datastore, e.g., Elasticsearch does not support the spatial predicates required by the
-Spatial Functions conformance class, only the `S_INTERSECTS` function against geometries in the
-Basic Spatial Functions with additional Spatial Literals class.
+their underlying database, e.g., Elasticsearch does not support the spatial predicates required by the
+"Spatial Functions" conformance class, but only the `S_INTERSECTS` function against geometries as required
+by the Basic Spatial Functions with additional Spatial Literals class.
 
-The STAC API Filter Extension reuses the definitions and conformance classes in OAFeat CQL,
+The STAC API Filter Extension reuses the definitions and conformance classes in OAFeat Part 3: Filter,
 adding only the *Item Search Filter* conformance class
 (`https://api.stacspec.org/v1.0.0/item-search#filter`) to bind
 the Filter behavior to the Item Search endpoint.
@@ -191,6 +198,10 @@ For additional capabilities, the following classes may be implemented:
   (`http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators`) defines the `LIKE`,
   `BETWEEN`, and `IN` operators. **Note**: this conformance class no longer requires implementing the
   `lower` and `upper` functions.
+- Case-insensitive Comparison: (`http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison`)
+  defines the UPPER and LOWER functions that can be used for case-insensitive comparison
+- Accent-insensitive Comparison: (`http://www.opengis.net/spec/cql2/1.0/conf/accent-insensitive-comparison`)
+  defines the ACCENTI function for accent-insensitive comparison
 - Basic Spatial Functions (`http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions`) defines the intersects function (`S_INTERSECTS`)
   that accepts only a BBOX or Point parameter.
 - Basic Spatial Functions with additional Spatial Literals
@@ -210,67 +221,22 @@ For additional capabilities, the following classes may be implemented:
   functions that provide more expressivity with datetime types than the relative comparison
   operators
   in the Basic CQL2 class.
-- Functions (`http://www.opengis.net/spec/cql2/1.0/conf/functions`) defines support
-  for function definition and usage.
-- Arithmetic Expressions: (`http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`) defines
-  support for arithmetic expressions.
 - Array Functions: (`http://www.opengis.net/spec/cql2/1.0/conf/array-functions`)
-  defines array functions (`A_EQUALS`, `A_CONTAINS`, `A_CONTAINED_BY`, and `A_OVERLAPS`).
 - Property-Property Comparisons: (`http://www.opengis.net/spec/cql2/1.0/conf/property-property`)
   allows the use of queryables (e.g., properties) in both positions of a clause, not just in the
   first position. This allows predicates like `property1 = property2` be expressed, whereas the
   Basic CQL2 conformance class only requires comparisons against right-hand-side literals.
-- Accent and Case-insensitive Comparison: (`http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison`)
-  defines the UPPER and LOWER functions that can be used for case-insensitive comparison.
+- Functions (`http://www.opengis.net/spec/cql2/1.0/conf/functions`) defines support
+  for function definition and usage.
+- Arithmetic Expressions: (`http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`) defines
+  support for arithmetic expressions.
+  defines array functions (`A_EQUALS`, `A_CONTAINS`, `A_CONTAINED_BY`, and `A_OVERLAPS`).
 
 Additionally, if an API implements the OGC API Features endpoint, it is **recommended** that the OAFeat Part 3 Filter,
 Features Filter, and Basic CQL2 conformance classes be implemented, which allow use of CQL2 filters against the
 OAFeat Part 1 Features endpoint (`/collections/{collectionId}/items`). Note that POST with a JSON body
 to the Features resource is not supported, as POST is used by the
 [Transaction Extension](https://github.com/stac-api-extensions/transaction) for creating items.
-
-## Getting Started with Implementation
-
-It recommended that implementers start with fully implementing only a subset of functionality. A good place to start is
-implementing only the Basic CQL2 conformance class of logical and comparison operators, defining a static Queryables
-schema with no queryables advertised and the `additionalProperties` field set to `true`, and
-only implementing CQL2 JSON. Following from that can be support for
-S_INTERSECTS, defining a static Queryables schema with only the basic Item properties, and
-implementing CQL2 Text. From there, other comparison operators can be implemented and a more
-dynamic Queryables schema.
-
-Formal definitions and grammars for CQL2 can be found in the
-[OAFeat CQL2 spec](https://github.com/opengeospatial/ogcapi-features/tree/master/cql2) includes
-a BNF grammar for CQL2 Text and both a JSON Schema and an OpenAPI specification for CQL2 JSON.
-The standalone files are:
-  
-- [cql2.bnf](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/standard/schema/cql2.bnf)
-- [cql2.json](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/standard/schema/cql2.json)
-- [cql2.yml](https://github.com/opengeospatial/ogcapi-features/blob/master/cql2/standard/schema/cql2.yml)
-
-These projects have or are developing CQL2 support:
-
-- [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac), a Python FastAPI STAC API server with a
-  PostgreSQL database backend, has support for the Filter Extension with CQL2 Text and CQL2 JSON, via using [pygeofilter](https://github.com/geopython/pygeofilter)
-  to translate CQL2 Text to CQL2 JSON and processing the CQL2 JSON with
-  [pgstac](https://github.com/stac-utils/pgstac)
-- [stac-fastapi-elasticsearch-opensearch)](https://github.com/stac-utils/stac-fastapi-elasticsearch-opensearch), a Python FastAPI
-  STAC API server with an OpenSearch or Elasticsearch database backend, has support for the Filter Extension with CQL2 JSON
-- [stac-server](https://github.com/stac-utils/stac-server), a Node.js STAC API server with an OpenSearch database backend,
-  has support for the Filter Extension with CQL2 JSON
-- [DotNetStac.Api](https://github.com/Terradue/DotNetStac.Api) has support for [CQL2 JSON](https://github.com/Terradue/DotNetStac.Api/blob/5e7334e95da92ca19f9e9b75c476f362ae24a6da/src/Stac.Api/Models/Cql2/CQL2.cs)
-  and implements [Linq extensions](https://github.com/Terradue/DotNetStac.Api/blob/6916507eaf21554872f5c03102d6c144e565e8f5/src/Stac.Api/Models/Cql2/Cql2Linq.cs)
-  to build [expressions trees](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/expression-trees) from CQL2.
-  It also includes a [default query provider](https://github.com/Terradue/DotNetStac.Api/blob/ea93d783e024e7a8e64dacf06ccb62b94779bd2d/src/Stac.Api/Services/Queryable/StacQueryProvider.cs)
-  for STAC object enumerables implemented in [DotNetStac](https://github.com/Terradue/DotNetStac).
-- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON,
-- [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
-- [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
-
-Note that the xbib CQL library (JVM) is the OASIS Contextual Query Language, not
-OGC CQL, and should not be used to implement this extension, as they are significantly different query languages.
-[Stacatto](https://github.com/planetlabs/staccato) uses this for their query language implementation, but it is
-not compliant with this extension.
 
 ## Queryables
 
@@ -291,11 +257,11 @@ matching semantics are such that, if an Item does not have an attribute by that 
 
 Queryables are advertised via a JSON Schema document retrieved from the `/queryables` endpoint. This endpoint at the root
 retrieves queryables that apply to all collections. When used as a subresource of the collection resource
-(e.g. /collections/collection1/queryables), it returns queryables pertaining only to that single collection.
+(e.g., `/collections/{cid}/queryables`), it returns queryables pertaining only to that single collection.
 
 It is required to implement both of these endpoints, but for a STAC API, this may simply be a static document of the
 STAC-specific fields.  A basic Queryables
-definitions for STAC Items should include at least the fields id, collection, geometry, and datetime.
+definitions for STAC Items should include at least the fields `id`, `collection`, `geometry`, and `datetime`.
 
 ```json
 {
@@ -327,10 +293,7 @@ definitions for STAC Items should include at least the fields id, collection, ge
 ```
 
 Fields in Item Properties should be exposed with their un-prefixed names, and not require expressions to prefix them
-with `properties`, e.g., `eo:cloud_cover` instead of `properties.eo:cloud_cover`.
-
-There may also be support for finding what queryables are available for a subset of collections, e.g.,
-`/queryables?collections=c1,c3`) as described in [this issue](https://github.com/opengeospatial/ogcapi-features/issues/576).
+with `properties`, e.g., `eo:cloud_cover` instead of `properties.eo:cloud_cover`. 
 
 The Landing Page endpoint (`/`) will have a Link with rel `http://www.opengis.net/def/rel/ogc/1.0/queryables` with an href to
 the endpoint `/queryables`. Additionally, each Collection resource will have a Link to the queryables resource for that
@@ -338,29 +301,29 @@ collection, e.g., `/collections/collection1/queryables`.
 
 The queryables endpoint returns a JSON Schema describing the names and types of terms that may be used in filter expressions.
 This response is defined in JSON Schema because it is a well-specified typed schema, but it is not used for validating a JSON
-document derived from it. This schema defines the terms that may be used in a CQL2 filter.
+document derived from it. This schema defines the terms that may be used in a CQL2 expression.
 
 These queryable terms are mapped by the service to filter Items. For example, the service may define a queryable with the
 name "eo:cloud_cover" that can be used in a CQL2 expression like `eo:cloud_cover <= 10`, with the semantics that only Items where the
 `properties.eo:cloud_cover` value was <= 10 would match the filter. The server would then translate this into an appropriate
-query for the data within its datastore.
+query for the data within its database.
 
-Queryables can be static or dynamically derived. For example, `cloud_cover` might be specified to have a value 0 to 100 or a field
+Queryables can be statically or dynamically derived. For example, `eo:cloud_cover` might be specified to have a value 0 to 100 or a field
 may have a set of enumerated values dynamically determined by an aggregation at runtime.  This schema can be used by a UI or
 interactive client to dynamically expose to the user the fields that are available for filtering, and provide a precise group
 of options for the values of these terms.
 
-Queryables can also be used to advertise "synthesized" property values. The only requirement in CQL2 is that the property have a type
-and evaluate to literal value of that type or NULL. For example, a filter like "Items must have an Asset with an eo:band with
+Because queryables are only loosely-coupled to the underlying contents of the STAC Item, they can be used to advertise more
+"synthesized" terms that don't map directly to an attriute name, like we previously saw for the `eo:cloud_cover`
+mapping to `properties.eo:cloud_cover`. The only requirement in CQL2 is that the property have a type
+and evaluate to a literal value of that type or NULL. For example, a filter like "Items must have an Asset with an eo:band with
 the common_name of 'nir'" can be expressed. A Queryable `assets_bands` could be defined to have a type of array of string and
 have the semantics that it contains all of `common_name` values across all assets and bands for an Item. This could then be
 filtered with the CQL2 expression `'nir' in assets_bands`. Implementations would then expand this expression into the
-appropriate query against its datastore. (TBD if this will actually work or not. This is also related to the upcoming
-restriction on property/literal comparisons)
+appropriate query against its database.
 
 An implementation may also choose not to advertise any queryables, and provide the user with out-of-band information or
-simply let them try querying against fields. While this is not allowed according to the OGC CQL2 Queryable spec, it is allowed
-in STAC API by the Filter Extension. In this case, the queryables endpoint (`/queryables`) would return this document:
+simply let them try querying against fields. In this case, the queryables endpoint (`/queryables`) would return this document:
 
 ```json
 {
@@ -379,10 +342,12 @@ in STAC API by the Filter Extension. In this case, the queryables endpoint (`/qu
 
 This extension adds three GET query parameters or POST JSON fields to an Item Search request:
 
-- filter-lang:`cql2-text` or `cql2-json`. If undefined, defaults to `cql2-text` for a GET request and `cql2-json` for a POST request.
-- filter-crs: recommended to not be passed, but server must only accept `http://www.opengis.net/def/crs/OGC/1.3/CRS84` as
-  a valid value, may reject any others
-- filter: CQL2 filter expression
+- `filter`: the CQL2 filter expression
+- `filter-lang`: (optional) either `cql2-text` or `cql2-json`. If undefined, defaults to `cql2-text`
+  for a GET request and `cql2-json` for a POST request.
+- `filter-crs`: (optional) the CRS identifier of the spatial predicates in the CQL2 expression. Recommended
+  to not be passed, but server must only accept `http://www.opengis.net/def/crs/OGC/1.3/CRS84` as
+  a valid value and may reject any others
 
 API implementations advertise which `filter-lang` values are supported via conformance classes in the Landing Page.
 At least one must be implemented, but it is recommended to implement both. If both are advertised as conformance classes, the
@@ -391,7 +356,7 @@ supported, the server must return a 400 error if `filter-lang=cql2-text`.
 
 ## Interaction with Endpoints
 
-In an implementation that supports several operator classes, the Landing Page (`/`) must return a document including
+In an implementation that supports several Filter conformances classes, the Landing Page (`/`) must return a document including
 at least these values:
 
 ```json
@@ -495,8 +460,6 @@ and we would still know it filtered on the EO extension `eo:cloud_cover` field. 
 
 While these do seem quite complex to write and understand, keep in mind that query construction will likely be done with a
 more ergonomic SDK, and query parsing will be done with the help of a ABNF grammar and OpenAPI schema.
-
-These parameters/fields must be supported by the STAC Item Search endpoint and OAFeat Features resource (`/collections/$collectionId/items`).
 
 ## Examples
 
@@ -613,8 +576,7 @@ filter=collection = 'landsat8_l1tp'
 
 ### Example 3: Conjunction with AND
 
-We'll be imagining these as queries against [EarthSearch Sentinel 2
-COG](https://stacindex.org/catalogs/earth-search#/Cnz1sryATwWudkxyZekxWx6356v9RmvvCcLLw79uHWJUDvt2?t=items) data.
+We'll be imagining these as queries against the Earth Search Sentinel 2 COG data.
 
 The queryables defined are as follows:
 
@@ -849,13 +811,13 @@ is `S_INTERSECTS` supporting BBOX and POINT. This has the same semantics as prov
 by the Item Search `intersects` parameter.  The `cql2-text` format uses WKT geometries and the `cql2-json`
 format uses GeoJSON geometries.
 
-#### Example 7: S_INTERSECTS cql2-text (GET)
+#### Example 7A: S_INTERSECTS with Point cql2-text (GET)
 
 ```text
 filter=S_INTERSECTS(geometry,POINT(-77.0824 38.7886))
 ```
 
-#### Example 7: S_INTERSECTS cql2-json (POST)
+#### Example 7A: S_INTERSECTS with Point cql2-json (POST)
 
 ```json
 {
@@ -863,10 +825,33 @@ filter=S_INTERSECTS(geometry,POINT(-77.0824 38.7886))
   "filter": {
     "op": "s_intersects",
     "args": [
-      { "property": "geometry" } ,
+      { "property": "geometry" },
       {
         "type": "Point",
         "coordinates": [-77.0824, 38.7886]
+      }
+    ]
+  }
+}
+```
+
+#### Example 7A: S_INTERSECTS with Bounding Box cql2-text (GET)
+
+```text
+filter=S_INTERSECTS(geometry,BBOX(160.6,-55.95,-170,-25.89))
+```
+
+#### Example 7A: S_INTERSECTS with Bounding Box cql2-json (POST)
+
+```json
+{
+  "filter-lang": "cql2-json",
+  "filter": {
+    "op": "s_intersects",
+    "args": [
+      { "property": "geometry" },
+      {
+        "bbox": [160.6, -55.95, -170, -25.89]
       }
     ]
   }
@@ -895,7 +880,7 @@ filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189
   "filter": {
     "op": "s_intersects",
     "args": [
-      { "property": "geometry" } ,
+      { "property": "geometry" },
       {
         "type": "Polygon",
         "coordinates": [[
@@ -933,7 +918,7 @@ filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189
       {
         "op": "s_intersects",
         "args": [
-          { "property": "geometry" } ,
+          { "property": "geometry" },
           {
             "type": "Polygon",
             "coordinates": [[
@@ -947,7 +932,7 @@ filter=S_INTERSECTS(geometry,POLYGON((-77.0824 38.7886,-77.0189 38.7886,-77.0189
       {
         "op": "s_intersects",
         "args": [
-          { "property": "geometry" } ,
+          { "property": "geometry" },
           {
             "type": "Polygon",
             "coordinates": [[
@@ -1071,7 +1056,7 @@ In the example using 'Straße', both the capitalized 'S' and Eszett ('ß') are c
 insensitive representation whereby the expressions `CASEI('Straße')`, `CASEI('straße')`,
 `CASEI('Strasse')`, and `CASEI('strasse')` are all equal.
 
-#### Example 13: cql2-text (GET)
+#### Example 13: CASEI cql2-text (GET)
 
 ```text
 filter=CASEI(provider) = CASEI('coolsat')
@@ -1081,7 +1066,7 @@ filter=CASEI(provider) = CASEI('coolsat')
 filter=CASEI(provider) = CASEI('Straße')
 ```
 
-#### Example 13: cql2-json (POST)
+#### Example 13: CASEI cql2-json (POST)
 
 ```json
 {
@@ -1127,13 +1112,13 @@ The predefined function `ACCENTI` allows for accent-insensitive comparisons. Thi
 defined in the Accent and Case-insensitive Comparison conformance class. In the example below,
 `ACCENTI('tiburon')` and `ACCENTI('tiburón')` evaluate to be equal.
 
-#### Example 14: cql2-text (GET)
+#### Example 14: ACCENTI cql2-text (GET)
 
 ```text
 filter=ACCENTI(provider) = ACCENTI('tiburón')
 ```
 
-#### Example 14: cql2-json (POST)
+#### Example 14: ACCENTI cql2-json (POST)
 
 ```json
 {
