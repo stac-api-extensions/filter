@@ -251,7 +251,7 @@ The standalone files are:
 These projects have or are developing CQL2 support:
 
 - [stac-fastapi-pgstac](https://github.com/stac-utils/stac-fastapi-pgstac), a Python FastAPI STAC API server with a
-  PostgreSQL database backend, has support for the Filter Extension with CQL2 Text and CQL2 JSON, via using [pygeofilter](https://github.com/geopython/pygeofilter)
+  PostgreSQL database backend, has support for the Filter Extension with CQL2 Text and CQL2 JSON, via using [cql2-rs](https://github.com/developmentseed/cql2-rs)
   to translate CQL2 Text to CQL2 JSON and processing the CQL2 JSON with
   [pgstac](https://github.com/stac-utils/pgstac)
 - [stac-fastapi-elasticsearch-opensearch)](https://github.com/stac-utils/stac-fastapi-elasticsearch-opensearch), a Python FastAPI
@@ -263,7 +263,7 @@ These projects have or are developing CQL2 support:
   to build [expressions trees](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/expression-trees) from CQL2.
   It also includes a [default query provider](https://github.com/Terradue/DotNetStac.Api/blob/ea93d783e024e7a8e64dacf06ccb62b94779bd2d/src/Stac.Api/Services/Queryable/StacQueryProvider.cs)
   for STAC object enumerables implemented in [DotNetStac](https://github.com/Terradue/DotNetStac).
-- [pygeofilter](https://github.com/geopython/pygeofilter) handles both CQL2 Text and CQL2 JSON,
+- [cql2-rs](https://github.com/developmentseed/cql2-rs) and [pygeofilter](https://github.com/geopython/pygeofilter) handle both CQL2 Text and CQL2 JSON,
 - [Geotools](https://github.com/geotools/geotools) has support for [CQL2 text](https://github.com/geotools/geotools/tree/main/modules/library/cql/src/main/java/org/geotools/filter/text/cql2)
 - [xtraplatform-spatial](https://github.com/interactive-instruments/xtraplatform-spatial) has support for CQL2 Text and provides an [ANTLR 4 grammer](https://github.com/interactive-instruments/xtraplatform-spatial/tree/master/xtraplatform-cql/src/main/antlr/de/ii/xtraplatform/cql/infra)
 
