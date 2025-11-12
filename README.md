@@ -286,8 +286,18 @@ not compliant with this extension.
 ## Queryables
 
 The Queryables mechanism allows a client to discover what terms are available for use when
-writing filter expressions. These terms are defined both over the entire catalog
-(at `/queryables`) and per collection (at `/collections/{collectionId}/queryables`).
+writing filter expressions. These terms are defined for Items over the entire catalog
+(at `/queryables`), per collection (at `/collections/{collectionId}/queryables`), and for Collections at a separate but unnamed endpoint.
+
+| Queryables Endpoint                                         | Endpoint linking to the Queryables Endpoint | Applicable `filter` endpoints           |
+| ----------------------------------------------------------- | ------------------------------------------- | --------------------------------------- |
+| `GET /queryables`                                           | `GET /`                                     | `GET /search` and `POST /search`        |
+| `GET /collections/{collectionId}/queryables`                | `GET /collections/{collectionId}`           | `GET /collections/{collectionId}/items` |
+| `GET /...` (*Endpoint name to be chosen by implementation*) | `GET /collections`                          | `GET /collections`                      |
+
+The Queryables endpoint is provided via a link in a specific endpoint.
+The Queryables endpoints SHALL be referenced with a link with the link relation type `http://www.opengis.net/def/rel/ogc/1.0/sortables`.
+
 The decision as to which queryables to define for the entire catalog is at the discretion
 of the implementer, and can be anywhere between none and the union of all
 queryables across all collections.
