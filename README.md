@@ -7,6 +7,9 @@
   - [Conformance Classes](#conformance-classes)
   - [Getting Started with Implementation](#getting-started-with-implementation)
   - [Queryables](#queryables)
+  - [Managing Queryables](#managing-queryables)
+    - [Replacing Queryables](#replacing-queryables)
+    - [Reverting a Collection to Defaults](#reverting-a-collection-to-defaults)
   - [GET Query Parameters and POST JSON fields](#get-query-parameters-and-post-json-fields)
   - [Interaction with Endpoints](#interaction-with-endpoints)
   - [Examples](#examples)
@@ -78,6 +81,8 @@
   - Property-Property Comparisons: `http://www.opengis.net/spec/cql2/1.0/conf/property-property`
   - Functions: `http://www.opengis.net/spec/cql2/1.0/conf/functions`
   - Arithmetic Expressions: `http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`
+  - Queryables Management — Catalog: `https://api.stacspec.org/v1.0.0/filter#queryables-management-catalog`
+  - Queryables Management — Collections: `https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`
 - **Scope:** STAC API - Features, STAC API - Item Search
 - **[Extension Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Candidate
 - **Dependencies:**
@@ -222,6 +227,20 @@ For additional capabilities, the following classes may be implemented:
   Basic CQL2 conformance class only requires comparisons against right-hand-side literals.
 - Accent and Case-insensitive Comparison: (`http://www.opengis.net/spec/cql2/1.0/conf/accent-case-insensitive-comparison`)
   defines the UPPER and LOWER functions that can be used for case-insensitive comparison.
+- Queryables Management — Catalog
+  (`https://api.stacspec.org/v1.0.0/filter#queryables-management-catalog`) defines a `PUT` operation
+  on the catalog-level queryables resource (`/queryables`), allowing clients to modify the set of
+  terms advertised as filterable across the catalog.
+- Queryables Management — Collections
+  (`https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`) defines `PUT` and
+  `DELETE` operations on the per-collection queryables resource
+  (`/collections/{collectionId}/queryables`). `PUT` establishes an override on the collection;
+  `DELETE` removes it so that the collection once again returns the catalog defaults.
+
+  These two classes are independent — a server may advertise either, both, or neither. The
+  catalog document acts as the default for per-collection `GET`s whenever the Collections class
+  is advertised, regardless of whether the Catalog class is also advertised. See
+  [Managing Queryables](#managing-queryables) for the full semantics.
 
 Additionally, if an API implements the OGC API Features endpoint, it is **recommended** that the OAFeat Part 3 Filter,
 Features Filter, and Basic CQL2 conformance classes be implemented, which allow use of CQL2 filters against the
@@ -280,6 +299,13 @@ writing filter expressions. These terms are defined both over the entire catalog
 The decision as to which queryables to define for the entire catalog is at the discretion
 of the implementer, and can be anywhere between none and the union of all
 queryables across all collections.
+
+Implementations that advertise one of the Queryables Management conformance classes allow the
+catalog-level and/or per-collection queryables to be modified at runtime — see
+[Managing Queryables](#managing-queryables). Although the queryables document is purely an
+advertisement of the filterable surface area, servers will typically need to back any newly
+added queryable with an appropriate index in their datastore to keep filter evaluation
+efficient; the specific mechanism is left to the implementer.
 
 By default, the queryables are the only terms that may be used
 in filter expressions, and if any term is used in expression that is not defined as a queryable an error must be
@@ -373,6 +399,147 @@ in STAC API by the Filter Extension. In this case, the queryables endpoint (`/qu
   },
   "additionalProperties": true
 }
+```
+
+## Managing Queryables
+
+Two independent conformance classes allow clients to modify the queryables advertised by the API:
+
+- `https://api.stacspec.org/v1.0.0/filter#queryables-management-catalog` — writes are allowed
+  at the catalog-level resource `/queryables`.
+- `https://api.stacspec.org/v1.0.0/filter#queryables-management-collections` — writes are
+  allowed at the per-collection resource `/collections/{collectionId}/queryables`.
+
+A server may advertise either, both, or neither. The combination of classes determines how the
+two scopes relate:
+
+- **Catalog only** — every collection inherits the catalog-level queryables. `GET` on a
+  per-collection queryables resource returns the catalog document (with `$id` rewritten to the
+  per-collection URL). Collections cannot diverge from the catalog through this extension.
+- **Collections only** — the catalog document still defines the per-collection defaults, and
+  any collection may override them via `PUT`. The catalog document itself is not writeable
+  through this extension and must be managed out of band.
+- **Both** — same as "Collections only" with respect to per-collection overrides, and in
+  addition the catalog defaults may be modified via `PUT /queryables`.
+
+In both "Collections only" and "Both" modes, the per-collection read semantics are identical:
+`GET` on `/collections/{collectionId}/queryables` returns the collection's override if one has
+been established via `PUT`, and otherwise the catalog document with `$id` rewritten to the
+per-collection URL. A collection with an override is not affected by subsequent changes to the
+catalog defaults until the override is removed via `DELETE`.
+
+Clients discover what is writeable by inspecting the conformance classes advertised on the
+landing page. Servers do not document write operations they do not implement in their OpenAPI.
+
+### Replacing Queryables
+
+`PUT` replaces the entire queryables document at the target endpoint.
+
+- **Content-Type:** the request body must use `application/schema+json`. Other media types
+  return `415 Unsupported Media Type`.
+- **Server-controlled fields:** the server controls `$schema`, `$id`, and `type`. If the
+  request body includes any of them, the server ignores them and applies its own canonical
+  values. This lets a client safely round-trip `GET` → modify → `PUT` without first stripping
+  these fields.
+- **Editable fields:** all other top-level fields are editable, including `properties`,
+  `additionalProperties`, `title`, and `description`. Note that changing `additionalProperties`
+  from `true` to `false` is a breaking change for clients that rely on permissive filter
+  evaluation.
+- **Validation:** implementations may impose additional constraints on which terms are
+  acceptable as queryables (for example, restricting to fields that are present in the
+  underlying Items). Rejected requests return a `400 Bad Request` with a useful description in
+  the `exception` body.
+- **Response:** on success, the server returns `200 OK` with the updated queryables document.
+  If the server cannot make the new queryables effective immediately (for example, because
+  reindexing is required), it may instead return `202 Accepted` with the same body; during the
+  window before the change is fully effective, filter evaluation against the new queryables
+  may behave inconsistently. Tracking the progress of deferred work is out of scope of this
+  extension.
+- **Concurrency:** last write wins. This extension does not require `ETag` / `If-Match`.
+- **Authorization:** these are administrative operations. Servers are expected to gate them
+  using whatever authentication and authorization mechanism is appropriate for their
+  deployment. Unauthenticated requests return `401 Unauthorized` and authenticated requests
+  without sufficient permission return `403 Forbidden`. The authentication mechanism itself is
+  out of scope of this extension.
+
+To add `gsd` to the catalog-level defaults — making it queryable on every collection that has
+not overridden the defaults — a client targets the catalog-level endpoint:
+
+```http
+PUT /queryables HTTP/1.1
+Content-Type: application/schema+json
+
+{
+  "title": "Queryables for Example STAC API",
+  "description": "Queryable names for the example STAC API Item Search filter.",
+  "properties": {
+    "id": {
+      "description": "ID",
+      "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/item.json#/id"
+    },
+    "collection": {
+      "description": "Collection",
+      "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/item.json#/collection"
+    },
+    "geometry": {
+      "description": "Geometry",
+      "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/item.json#/geometry"
+    },
+    "datetime": {
+      "description": "Datetime",
+      "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/datetime.json#/properties/datetime"
+    },
+    "gsd": {
+      "description": "Ground Sample Distance",
+      "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/instrument.json#/properties/gsd"
+    }
+  },
+  "additionalProperties": true
+}
+```
+
+To restrict a single collection to just `datetime` and `eo:cloud_cover`, a client targets the
+per-collection endpoint with the same shape:
+
+```http
+PUT /collections/landsat8_l1tp/queryables HTTP/1.1
+Content-Type: application/schema+json
+
+{
+  "title": "Queryables for landsat8_l1tp",
+  "properties": {
+    "datetime": {
+      "description": "Datetime",
+      "$ref": "https://schemas.stacspec.org/v1.0.0/item-spec/json-schema/datetime.json#/properties/datetime"
+    },
+    "eo:cloud_cover": {
+      "description": "Cloud Cover",
+      "$ref": "https://stac-extensions.github.io/eo/v1.0.0/schema.json#/properties/eo:cloud_cover"
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+### Reverting a Collection to Defaults
+
+Whenever a server advertises `queryables-management-collections` (either alone or together
+with `queryables-management-catalog`), it must also expose a `DELETE` operation on
+`/collections/{collectionId}/queryables`. `DELETE` removes any override on the collection so
+that subsequent `GET` requests once again return the catalog defaults.
+
+On success, the server returns `200 OK` with the now-effective document (i.e., the catalog
+defaults, with `$id` rewritten to the per-collection URL). The authorization, concurrency, and
+deferred-work considerations described for `PUT` apply equally to `DELETE`.
+
+A `PUT` whose body is byte-equivalent to the catalog defaults is **not** equivalent to a
+`DELETE`. A successful `PUT` always establishes an override on the collection, even if the
+content happens to match the catalog defaults at that moment — subsequent changes to the
+catalog defaults will not propagate to the collection until the override is removed with
+`DELETE`.
+
+```http
+DELETE /collections/landsat8_l1tp/queryables HTTP/1.1
 ```
 
 ## GET Query Parameters and POST JSON fields

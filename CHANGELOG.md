@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Two new conformance classes for managing queryables at runtime:
+  - `https://api.stacspec.org/v1.0.0/filter#queryables-management-catalog` enables `PUT` on
+    `/queryables` to replace the catalog-level queryables document.
+  - `https://api.stacspec.org/v1.0.0/filter#queryables-management-collections` enables `PUT` and
+    `DELETE` on `/collections/{collectionId}/queryables` to set or remove a collection's
+    override of the catalog defaults.
+
+  A server may advertise either, both, or neither. When the Collections class is advertised, the
+  catalog document defines the per-collection defaults and the per-collection resource returns
+  the override (if any) or the catalog defaults. The two classes are orthogonal — advertising
+  Collections does not require the Catalog class, and vice versa. See the
+  [Managing Queryables](README.md#managing-queryables) section for the full semantics.
+
 ## [v1.0.0-rc.4] - 2025-02-27
 
 ### Changed
