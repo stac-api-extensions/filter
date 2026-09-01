@@ -64,6 +64,7 @@
   - Filter: `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter`
   - Features Filter: `http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter`
   - Item Search Filter: `https://api.stacspec.org/v1.0.0/item-search#filter`
+  - Collection Search Filter: `https://api.stacspec.org/v1.0.0/collection-search#filter`
   - CQL2 Text: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-text`
   - CQL2 JSON: `http://www.opengis.net/spec/cql2/1.0/conf/cql2-json`
   - Basic CQL2: `http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2`
@@ -78,14 +79,16 @@
   - Property-Property Comparisons: `http://www.opengis.net/spec/cql2/1.0/conf/property-property`
   - Functions: `http://www.opengis.net/spec/cql2/1.0/conf/functions`
   - Arithmetic Expressions: `http://www.opengis.net/spec/cql2/1.0/conf/arithmetic`
-- **Scope:** STAC API - Features, STAC API - Item Search
+- **Scope:** STAC API - Features, STAC API - Item Search, STAC API - Collection Search
 - **[Extension Maturity Classification](https://github.com/radiantearth/stac-api-spec/tree/main/README.md#maturity-classification):** Candidate
 - **Dependencies:**
-  - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/item-search)
   - [STAC API - Features](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/ogcapi-features)
+  - [STAC API - Item Search](https://github.com/radiantearth/stac-api-spec/tree/v1.0.0/item-search)
+  - [STAC API - Collection Search](https://github.com/stac-api-extensions/collection-search)
 - **Owner**: @philvarner
 
-The Filter extension provides an expressive mechanism for searching based on Item attributes.
+The Filter extension provides an expressive mechanism for searching based on Item and Collection attributes,
+depending on the conformance class implemented.
 
 This extension references behavior defined in the
 [OGC API - Features - Part 3: Filtering Version 1.0](https://docs.ogc.org/is/19-079r2/19-079r2.html)
@@ -112,7 +115,7 @@ Cassandra database, or the OASIS Contextual Query Language.
 
 ## Limitations of Item Search
 
-OAFeat defines a limited set of filtering capabilities. Filtering can only be done over a single collection and
+OAFeat defines a limited set of filtering capabilities for Items. For Items, filtering can only be done over a single collection and
 with only a single `bbox` (rectangular spatial filter) parameter and a single datetime (instant or interval) parameter.
 
 The STAC Item Search specification extends the functionality of OAFeat in a few key ways:
@@ -128,7 +131,7 @@ multiple spatial or temporal filters.
 
 ## Filter Expressiveness
 
-This extension expands the capabilities of Item Search and the OAFeat Items resource with
+This extension expands the capabilities of Item Search, Collection Search and the OAFeat Items resource with
 [Common Query Language (CQL2)](https://docs.ogc.org/is/21-065r2/21-065r2.html)
 by providing an expressive query language to construct more complex filter predicates using operators that are similar to
 those provided by SQL. This extension also supports the Queryables mechanism that allows discovery of what Item fields can be used in
@@ -141,6 +144,9 @@ CQL2 enables more expressive queries than supported by STAC API Item Search. The
 - Items whose `geometry` values intersect any one of several Polygons, using `OR` and `S_INTERSECTS`
 - Items whose `geometry` values intersect one Polygon, but do not intersect another one, using AND, NOT, and
   S_INTERSECTS
+
+For Collection Search, no filtering capabilities are present by default. As such this extension formally allows to formulate
+filters for Collections in an expressive way.
 
 ## Conformance Classes
 
@@ -156,7 +162,10 @@ Basic Spatial Functions with additional Spatial Literals class.
 The STAC API Filter Extension reuses the definitions and conformance classes in OAFeat CQL,
 adding only the *Item Search Filter* conformance class
 (`https://api.stacspec.org/v1.0.0/item-search#filter`) to bind
-the Filter behavior to the Item Search endpoint.
+the Filter behavior to the Item Search endpoint
+and the *Collection Search Filter* conformance class
+(`https://api.stacspec.org/v1.0.0/collection-search#filter`) to bind
+the Filter behavior to the Collection endpoint.
 
 The implementation **must** support these conformance classes:
 
@@ -166,15 +175,17 @@ The implementation **must** support these conformance classes:
   the query language used for the `filter` parameter defined by Filter. This includes logical operators (`AND`, `OR`, `NOT`),
   comparison operators (`=`, `<>`, `<`, `<=`, `>`, `>=`), and `IS NULL`. The comparison operators are allowed against
   string, numeric, boolean, date, and datetime types.
-- Item Search Filter (`https://api.stacspec.org/v1.0.0/item-search#filter`) binds the Filter and
+- For Item Search only : Item Search Filter (`https://api.stacspec.org/v1.0.0/item-search#filter`) binds the Filter and
   Basic CQL2 conformance classes to apply to the Item Search endpoint (`/search`).  This class is the correlate of the OAFeat CQL2 Features
   Filter class that binds Filter and Basic CQL2 to the Features resource (`/collections/{cid}/items`).
+- For Collection Search only: Collection Search Filter (`https://api.stacspec.org/v1.0.0/collection-search#filter`) binds the Filter and
+  Basic CQL2 conformance classes to apply to the Collection endpoint (`/collection`).
 
 The implementation **must** support at least one of the "CQL2 Text" or "CQL2 JSON" conformance classes that
 define the CQL2 format used in the filter parameter:
 
-- CQL2 Text (`http://www.opengis.net/spec/cql2/1.0/conf/cql2-text`) defines that the CQL2 Text format is supported by Item Search
-- CQL2 JSON (`http://www.opengis.net/spec/cql2/1.0/conf/cql2-json`) defines that the CQL2 JSON format is supported by Item Search
+- CQL2 Text (`http://www.opengis.net/spec/cql2/1.0/conf/cql2-text`)
+- CQL2 JSON (`http://www.opengis.net/spec/cql2/1.0/conf/cql2-json`)
 
 If both are advertised as being supported, it is only required that both be supported for GET query parameters, and that
 only that CQL2 JSON be supported for POST JSON requests.  It is recommended that clients use CQL2 Text in GET requests and
@@ -276,8 +287,18 @@ not compliant with this extension.
 ## Queryables
 
 The Queryables mechanism allows a client to discover what terms are available for use when
-writing filter expressions. These terms are defined both over the entire catalog
-(at `/queryables`) and per collection (at `/collections/{collectionId}/queryables`).
+writing filter expressions. These terms are defined for Items over the entire catalog
+(at `/queryables`), per collection (at `/collections/{collectionId}/queryables`), and for Collections at a separate but unnamed endpoint.
+
+| Queryables Endpoint                                         | Endpoint linking to the Queryables Endpoint | Applicable `filter` endpoints           |
+| ----------------------------------------------------------- | ------------------------------------------- | --------------------------------------- |
+| `GET /queryables`                                           | `GET /`                                     | `GET /search` and `POST /search`        |
+| `GET /collections/{collectionId}/queryables`                | `GET /collections/{collectionId}`           | `GET /collections/{collectionId}/items` |
+| `GET /...` (*Endpoint name to be chosen by implementation*) | `GET /collections`                          | `GET /collections`                      |
+
+The Queryables endpoint is provided via a link in a specific endpoint.
+The Queryables endpoints SHALL be referenced with a link with the link relation type `http://www.opengis.net/def/rel/ogc/1.0/sortables`.
+
 The decision as to which queryables to define for the entire catalog is at the discretion
 of the implementer, and can be anywhere between none and the union of all
 queryables across all collections.
