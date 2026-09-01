@@ -46,6 +46,51 @@ paths:
           $ref: "#/components/responses/Queryables"
         default:
           $ref: "#/components/responses/Error"
+    put:
+      summary: Replace the catalog-level queryables.
+      operationId: putQueryables
+      description: |-
+        **Extension:** Filter — Queryables Management — Catalog
+        (`https://api.stacspec.org/v1.0.0/filter#queryables-management-catalog`)
+
+        Replace the entire catalog-level queryables document with the request body. The request body
+        must be a JSON Schema document with the same structure as returned by `GET` on this
+        resource.
+
+        The server controls `$schema`, `$id`, and `type` — if present in the request body, they are
+        ignored and the server applies its own canonical values. All other top-level fields are
+        editable, including `properties`, `additionalProperties`, `title`, and `description`.
+
+        When the server also advertises
+        `https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`, collections that
+        have established an override via their own `PUT` are not affected; collections without an
+        override pick up the new catalog document on subsequent `GET`s.
+
+        On success the server returns `200 OK` with the updated document. If the new queryables
+        cannot be made effective immediately (for example, because reindexing is required), the
+        server may instead return `202 Accepted` with the same body; filter evaluation against the
+        new queryables may behave inconsistently until the deferred work completes. Tracking
+        deferred work is out of scope.
+
+        Concurrent writes are resolved by last-write-wins; this extension does not require ETag /
+        `If-Match`.
+      tags:
+        - Filter Extension
+      requestBody:
+        required: true
+        content:
+          application/schema+json:
+            schema:
+              $ref: "#/components/schemas/queryables"
+      responses:
+        "200":
+          $ref: "#/components/responses/Queryables"
+        "202":
+          $ref: "#/components/responses/Queryables"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
   /collections/{collectionId}:
     get:
       description: |-
@@ -105,12 +150,17 @@ paths:
           $ref: "https://api.stacspec.org/v1.0.0/ogcapi-features/openapi.yaml#/components/responses/Error"
   /collections/{collectionId}/queryables:
     get:
-      summary: Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions.
+      summary: Get the JSON Schema defining the list of variable terms that can be used in CQL2 expressions for this collection.
       operationId: getQueryablesForCollection
       description: |-
-        This endpoint returns a list of variable terms that can be used in CQL2 expressions. The
-        precise definition of this can be found in the OGC API - Features - Part 3: Filtering and the 
-        Common Query Language (CQL) specification.
+        This endpoint returns a list of variable terms that can be used in CQL2 expressions for the
+        collection. The precise definition can be found in the OGC API - Features - Part 3: Filtering
+        and the Common Query Language (CQL) specification.
+
+        When the server advertises
+        `https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`, the returned
+        document is the collection's override if one has been established, and otherwise the
+        catalog defaults (with `$id` rewritten to this resource's URL).
       parameters:
         - in: path
           name: collectionId
@@ -124,6 +174,99 @@ paths:
         "200":
           $ref: "#/components/responses/Queryables"
         default:
+          $ref: "#/components/responses/Error"
+    put:
+      summary: Replace the queryables for this collection.
+      operationId: putQueryablesForCollection
+      description: |-
+        **Extension:** Filter — Queryables Management — Collections
+        (`https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`)
+
+        Replace the entire queryables document for the collection with the request body. The
+        request body must be a JSON Schema document with the same structure as returned by `GET` on
+        this resource.
+
+        The server controls `$schema`, `$id`, and `type` — if present in the request body, they are
+        ignored and the server applies its own canonical values. All other top-level fields are
+        editable, including `properties`, `additionalProperties`, `title`, and `description`.
+
+        A successful `PUT` always establishes an override on the collection, even when the body is
+        byte-equivalent to the catalog defaults — subsequent changes to the catalog defaults will
+        not propagate to this collection until the override is removed via `DELETE`.
+
+        The catalog-level queryables resource at `/queryables` is not affected.
+
+        On success the server returns `200 OK` with the updated document. If the new queryables
+        cannot be made effective immediately (for example, because reindexing is required), the
+        server may instead return `202 Accepted` with the same body; filter evaluation against the
+        new queryables may behave inconsistently until the deferred work completes. Tracking
+        deferred work is out of scope.
+
+        Concurrent writes are resolved by last-write-wins; this extension does not require ETag /
+        `If-Match`.
+      tags:
+        - Filter Extension
+      parameters:
+        - in: path
+          name: collectionId
+          schema:
+            type: string
+          required: true
+          description: ID of Collection
+      requestBody:
+        required: true
+        content:
+          application/schema+json:
+            schema:
+              $ref: "#/components/schemas/queryables"
+      responses:
+        "200":
+          $ref: "#/components/responses/Queryables"
+        "202":
+          $ref: "#/components/responses/Queryables"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
+          $ref: "#/components/responses/Error"
+    delete:
+      summary: Remove the collection's queryables override and revert to the catalog defaults.
+      operationId: deleteQueryablesForCollection
+      description: |-
+        **Extension:** Filter — Queryables Management — Collections
+        (`https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`)
+
+        This operation is defined whenever the server advertises
+        `https://api.stacspec.org/v1.0.0/filter#queryables-management-collections`. It removes any
+        override on the collection so that subsequent `GET` requests return the catalog defaults
+        (with `$id` rewritten to this resource's URL).
+
+        Whether the catalog defaults themselves are also writeable through this extension depends
+        on whether the server additionally advertises
+        `https://api.stacspec.org/v1.0.0/filter#queryables-management-catalog` — that question is
+        orthogonal to `DELETE`.
+
+        On success the server returns `200 OK` with the now-effective document, which is the
+        catalog-level queryables document. As with `PUT`, the server may instead return `202
+        Accepted` if the change cannot be made effective immediately.
+
+        Authorization, concurrency, and deferred-work considerations are the same as for `PUT`.
+      tags:
+        - Filter Extension
+      parameters:
+        - in: path
+          name: collectionId
+          schema:
+            type: string
+          required: true
+          description: ID of Collection
+      responses:
+        "200":
+          $ref: "#/components/responses/Queryables"
+        "202":
+          $ref: "#/components/responses/Queryables"
+        "4XX":
+          $ref: "#/components/responses/Error"
+        "5XX":
           $ref: "#/components/responses/Error"
   /search:
     get:
@@ -263,6 +406,40 @@ components:
         accept is 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'.
       type: string
       format: uri
+    queryables:
+      type: object
+      x-stac-api-fragment: filter
+      description: |-
+        **Extension:** Filter
+
+        A JSON Schema document describing the queryables advertised as filterable for the
+        resource. The structure follows the OGC API - Features - Part 3 Queryables specification:
+        a JSON Schema of type `object` whose `properties` map queryable names to their type
+        definitions, with `additionalProperties` controlling whether undeclared fields may be used
+        in filter expressions.
+      properties:
+        $schema:
+          type: string
+          format: uri
+        $id:
+          type: string
+          format: uri
+        type:
+          type: string
+          enum:
+            - object
+        title:
+          type: string
+        description:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        additionalProperties:
+          oneOf:
+            - type: boolean
+            - type: object
     exception:
       type: object
       description: |-
